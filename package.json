@@ -1,0 +1,14 @@
+{
+  "name": "drum-kit-social",
+  "version": "1.0.0",
+  "description": "A community-driven app for sharing professional drummer kit configurations",
+   "scripts": {
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "install-all": "cd client && npm install && cd ../server && npm install"
+  },
+  "keywords": ["mern", "drums", "social"],
+  "author": "Emily Parker",
+  "license": "ISC",
+  "type": "commonjs"
+}
