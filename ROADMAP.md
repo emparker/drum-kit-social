@@ -130,6 +130,8 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 ### Step 2.1: Create DrummerPost Model
 - [ ] Create `server/models/DrummerPost.js`
 - [ ] Define schema with all fields from CLAUDE.md
+- [ ] Add required `album` field (String) - connects drummer to specific album
+- [ ] Note: One drummer can have multiple posts (one per album/kit combo)
 - [ ] Add `user` reference to track creator
 - [ ] Add `likes` and `dislikes` as arrays of User references
 - [ ] Add timestamps
@@ -147,13 +149,13 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 **What you'll learn:** CRUD operations, populate, authorization checks
 
-### Step 2.3: Build Update Routes (Editing Logic)
-- [ ] PUT `/:postId` - update drummer name (creator only)
-- [ ] PUT `/:postId/drumkit` - update drum kit fields (any user)
-- [ ] PUT `/:postId/addons` - update add-on fields (any user)
-- [ ] Implement permission checks where needed
+### Step 2.3: Build Update Route (Owner Only)
+- [ ] PUT `/:postId` - update ANY field (drummer name, album, drum kit, add-ons)
+- [ ] Check that req.auth._id matches post.user (owner only)
+- [ ] Return 403 Forbidden if not the owner
+- [ ] Accept partial updates (only update fields that are provided)
 
-**What you'll learn:** Partial updates, conditional authorization
+**What you'll learn:** Full ownership authorization, protecting resources
 
 ### Step 2.4: Build Voting Routes
 - [ ] PUT `/:postId/like` - add user to likes array
@@ -175,9 +177,8 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 ### Step 2.6: Test All Post Endpoints
 - [ ] Create post, verify user is attached
 - [ ] Get all posts, verify sorted by likes
-- [ ] Update drummer name as creator (success)
-- [ ] Update drummer name as different user (should fail)
-- [ ] Update drum kit as any user (success)
+- [ ] Update post as creator (success)
+- [ ] Update post as different user (should fail with 403)
 - [ ] Like/dislike toggling works correctly
 - [ ] Delete as creator (success), as other user (fail)
 
@@ -262,14 +263,13 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 **What you'll learn:** Event handling, optimistic UI updates
 
-### Step 5.3: Build Drum Kit Edit Form
-- [ ] Create inline edit capability for drum kit fields
-- [ ] "+ Add-On to this Kit" button reveals add-on form
-- [ ] Any user can fill in empty fields
-- [ ] Save button calls update API
-- [ ] Show success/error feedback
+### Step 5.3: Display Album Prominently
+- [ ] Album title should be large and bold (more prominent than kit data)
+- [ ] Position album between drummer name and kit details
+- [ ] Use CSS to create clear visual hierarchy: Name → Album → Kit
+- [ ] Consider using the lime green accent for album display
 
-**What you'll learn:** Controlled inputs, inline editing pattern
+**What you'll learn:** Visual hierarchy, CSS typography
 
 ### Step 5.4: Build Comment Section
 - [ ] Display comments in scrollable container (max height)
@@ -300,6 +300,7 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 ### Step 6.1: Build Create Post Form
 - [ ] Create `client/src/pages/CreatePost.jsx`
 - [ ] Form field for drummer name (required)
+- [ ] Form field for album (required)
 - [ ] Optional fields for drum kit info
 - [ ] Optional fields for add-ons
 - [ ] Submit creates post via context
@@ -326,6 +327,7 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 ### Step 7.2: Implement Full Edit Mode
 - [ ] Edit drummer name (text input)
+- [ ] Edit album (text input)
 - [ ] Edit all drum kit fields
 - [ ] Edit all add-on fields
 - [ ] Save all changes at once

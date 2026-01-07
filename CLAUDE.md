@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Drum Kit Social** is a community-driven web application where users can share and collaborate on professional drummer profiles and their drum kit configurations. Think of it as a wiki-style social platform specifically for the drumming community.
+**Drum Kit Social** is a community-driven web application where users can create and share professional drummer profiles with their drum kit configurations by album. Users build a searchable database of drummer/album/kit combinations. Each submission is fully owned by its creator, with community interaction through voting and comments.
 
 This project is a learning exercise for the MERN stack (MongoDB, Express, React, Node.js) with JWT authentication.
 
@@ -87,11 +87,15 @@ drum-kit-social/
 ```
 
 ### DrummerPost Model
+
+**Note:** A single drummer can have multiple posts (one per album/kit combination).
+
 ```javascript
 {
   drummerName: String (required),
+  album: String (required),             // Album where drummer used this kit
   user: ObjectId (ref: User),           // Creator of the post
-  
+
   // Standard 5-Piece Kit
   drumKit: {
     kickDrum: String,
@@ -100,7 +104,7 @@ drum-kit-social/
     rackTom2: String,
     floorTom: String
   },
-  
+
   // Add-ons (predefined categories)
   addOns: {
     hiHats: String,
@@ -109,11 +113,11 @@ drum-kit-social/
     hardware: String,
     effects: String
   },
-  
+
   // Voting system (many-to-many)
   likes: [ObjectId (ref: User)],        // Users who liked
   dislikes: [ObjectId (ref: User)],     // Users who disliked
-  
+
   createdAt: Date,
   updatedAt: Date
 }
@@ -145,9 +149,7 @@ drum-kit-social/
 | GET | `/user` | Get current user's posts | Yes |
 | GET | `/:postId` | Get single post | Yes |
 | POST | `/` | Create new post | Yes |
-| PUT | `/:postId` | Update post (owner only for name) | Yes |
-| PUT | `/:postId/drumkit` | Update drum kit info (any user) | Yes |
-| PUT | `/:postId/addons` | Update add-ons (any user) | Yes |
+| PUT | `/:postId` | Update post (owner only) | Yes |
 | PUT | `/:postId/like` | Like a post | Yes |
 | PUT | `/:postId/dislike` | Dislike a post | Yes |
 | DELETE | `/:postId` | Delete post (owner only) | Yes |
@@ -184,6 +186,12 @@ Manages: posts array, CRUD operations, voting, drum kit updates
 3. JWT attached to all API requests via Authorization header
 4. Protected routes check for valid token
 
+### Album Field & Display
+- Album is a required field connecting the drummer to a specific recording
+- Album title should be visually prominent in the UI (larger, bolder than drum kit data)
+- Album should be displayed separately from drum kit information
+- Example: "Dave Grohl - Nevermind" (album) with kit details below
+
 ### Voting Rules
 - Each user can ONLY like OR dislike a post (not both)
 - Clicking like when already liked → removes like
@@ -195,9 +203,12 @@ Manages: posts array, CRUD operations, voting, drum kit updates
 | Field | Who Can Edit | Where |
 |-------|--------------|-------|
 | Drummer Name | Post creator only | My Posts page |
-| Drum Kit Info | Any logged-in user | Feed (unless set by creator) |
-| Add-ons | Any logged-in user | Feed |
+| Album | Post creator only | My Posts page |
+| Drum Kit Info | Post creator only | My Posts page |
+| Add-ons | Post creator only | My Posts page |
 | Delete Post | Post creator only | My Posts page |
+
+**Key Concept:** Full ownership model. Only the creator can edit ANY field on their post. Community interaction is limited to viewing, voting, and commenting.
 
 ### Comments
 - Newest comments appear at top
