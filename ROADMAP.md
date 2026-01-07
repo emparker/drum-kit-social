@@ -126,65 +126,67 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 ---
 
-## Phase 2: Drummer Posts - Backend
+## Phase 2: Drummer Posts - Backend ✅ COMPLETED
 **Goal:** Build the complete API for drummer posts.
 
-### Step 2.1: Create DrummerPost Model
-- [ ] Create `server/models/DrummerPost.js`
-- [ ] Define schema with all fields from CLAUDE.md
-- [ ] Add required `album` field (String) - connects drummer to specific album
-- [ ] Note: One drummer can have multiple posts (one per album/kit combo)
-- [ ] Add `user` reference to track creator
-- [ ] Add `likes` and `dislikes` as arrays of User references
-- [ ] Add timestamps
+### Step 2.1: Create DrummerPost Model ✅
+- [x] Create `server/models/DrummerPost.js`
+- [x] Define schema with all fields from CLAUDE.md
+- [x] Add required `album` field (String) - connects drummer to specific album
+- [x] Note: One drummer can have multiple posts (one per album/kit combo)
+- [x] Add `user` reference to track creator
+- [x] Add `likes` and `dislikes` as arrays of User references
+- [x] Add timestamps
 
 **What you'll learn:** Mongoose references, embedded vs referenced data
 
-### Step 2.2: Build Basic CRUD Routes
-- [ ] Create `server/routes/drummerPostRouter.js`
-- [ ] GET `/` - get all posts, populate user, sort by likes count
-- [ ] GET `/user` - get posts by logged-in user only
-- [ ] GET `/:postId` - get single post with user populated
-- [ ] POST `/` - create new post (attach req.auth._id as user)
-- [ ] DELETE `/:postId` - delete (only if creator matches)
-- [ ] Apply auth middleware to all routes
+### Step 2.2: Build Basic CRUD Routes ✅
+- [x] Create `server/routes/drummerPostRouter.js`
+- [x] GET `/` - get all posts, populate user, sort by likes count
+- [x] GET `/user` - get posts by logged-in user only
+- [x] GET `/:postId` - get single post with user populated
+- [x] POST `/` - create new post (attach req.auth._id as user)
+- [x] DELETE `/:postId` - delete (only if creator matches)
+- [x] Apply auth middleware to all routes
 
 **What you'll learn:** CRUD operations, populate, authorization checks
 
-### Step 2.3: Build Update Route (Owner Only)
-- [ ] PUT `/:postId` - update ANY field (drummer name, album, drum kit, add-ons)
-- [ ] Check that req.auth._id matches post.user (owner only)
-- [ ] Return 403 Forbidden if not the owner
-- [ ] Accept partial updates (only update fields that are provided)
+### Step 2.3: Build Update Route (Owner Only) ✅
+- [x] PUT `/:postId` - update ANY field (drummer name, album, drum kit, add-ons)
+- [x] Check that req.auth._id matches post.user (owner only)
+- [x] Return 403 Forbidden if not the owner
+- [x] Accept partial updates (only update fields that are provided)
 
 **What you'll learn:** Full ownership authorization, protecting resources
 
-### Step 2.4: Build Voting Routes
-- [ ] PUT `/:postId/like` - add user to likes array
+### Step 2.4: Build Voting Routes ✅
+- [x] PUT `/:postId/like` - add user to likes array
   - If already liked, remove (toggle off)
   - If disliked, remove dislike first, then add like
-  - Use `$addToSet` and `$pull` for array operations
-- [ ] PUT `/:postId/dislike` - same logic reversed
-- [ ] Return updated post with new vote counts
+  - Uses array filter and push for array operations
+- [x] PUT `/:postId/dislike` - same logic reversed
+- [x] Return updated post with new vote counts
 
 **What you'll learn:** Many-to-many relationships, Mongoose array operators
 
-### Step 2.5: Add Sorting by Likes
-- [ ] Modify GET `/` to sort by likes array length (descending)
-- [ ] Use MongoDB aggregation OR sort after fetch
-- [ ] Consider adding virtual for `likeCount` and `dislikeCount`
+### Step 2.5: Add Sorting by Likes ✅
+- [x] Modify GET `/` to sort by likes array length (descending)
+- [x] Sort after fetch using JavaScript array sort
+- [x] Note added for future refactor: virtual properties and aggregation pipeline
 
 **What you'll learn:** Sorting, virtuals, aggregation basics
 
-### Step 2.6: Test All Post Endpoints
-- [ ] Create post, verify user is attached
-- [ ] Get all posts, verify sorted by likes
-- [ ] Update post as creator (success)
-- [ ] Update post as different user (should fail with 403)
-- [ ] Like/dislike toggling works correctly
-- [ ] Delete as creator (success), as other user (fail)
+### Step 2.6: Test All Post Endpoints ✅
+- [x] Create post, verify user is attached
+- [x] Get all posts, verify sorted by likes
+- [x] Update post as creator (success)
+- [x] Update post as different user (should fail with 403)
+- [x] Like/dislike toggling works correctly
+- [x] Delete as creator (success), as other user (fail)
 
 **🎯 Checkpoint:** All post CRUD operations work correctly. Voting logic is solid.
+
+**✅ Phase 2 Complete!** Drummer posts API fully functional with ownership model and voting system.
 
 ---
 

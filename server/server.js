@@ -22,6 +22,9 @@ const authMiddleware = require('./middleware/authMiddleware');
 const authRouter = require('./routes/authRouter');
 app.use('/api/auth', authRouter);
 
+const drummerPostRouter = require('./routes/drummerPostRouter');
+app.use('/api/posts', authMiddleware, drummerPostRouter);
+
 // Test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is running! 🥁' });

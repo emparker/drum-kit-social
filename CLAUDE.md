@@ -141,6 +141,7 @@ drum-kit-social/
 |--------|----------|-------------|---------------|
 | POST | `/signup` | Create new user | No |
 | POST | `/login` | Login, returns JWT | No |
+| GET | `/users` | Get all users (for debugging/testing) | No |
 
 ### Drummer Post Routes (`/api/posts`)
 | Method | Endpoint | Description | Auth Required |

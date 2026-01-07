@@ -110,4 +110,22 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// GET /api/auth/users - Get all users (for Postman testing/debugging)
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      users
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching users',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
