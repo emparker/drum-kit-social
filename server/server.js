@@ -15,9 +15,24 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Middleware
+const authMiddleware = require('./middleware/authMiddleware');
+
+// Routes
+const authRouter = require('./routes/authRouter');
+app.use('/api/auth', authRouter);
+
 // Test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is running! 🥁' });
+});
+
+// Protected test route
+app.get('/api/protected', authMiddleware, (req, res) => {
+  res.json({
+    message: 'You accessed a protected route!',
+    user: req.auth
+  });
 });
 
 // Start server

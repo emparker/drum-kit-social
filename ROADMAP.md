@@ -56,71 +56,73 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 ---
 
-## Phase 1: Authentication System
+## Phase 1: Authentication System ✅ COMPLETED
 **Goal:** Build complete user signup, login, and protected routes.
 
-### Step 1.1: Create the User Model
-- [ ] Create `server/models/User.js`
-- [ ] Define schema: username (unique, required), password (required)
-- [ ] Add pre-save hook to hash password with bcryptjs
-- [ ] Add method to compare passwords for login
+### Step 1.1: Create the User Model ✅
+- [x] Create `server/models/User.js`
+- [x] Define schema: username (unique, required), password (required)
+- [x] Add pre-save hook to hash password with bcryptjs
+- [x] Add method to compare passwords for login
 
 **What you'll learn:** Mongoose schemas, password hashing, instance methods
 
-### Step 1.2: Build Auth Routes
-- [ ] Create `server/routes/authRouter.js`
-- [ ] POST `/signup` - validate input, create user, return JWT
-- [ ] POST `/login` - find user, verify password, return JWT
-- [ ] Use `jsonwebtoken` to sign tokens with your secret
-- [ ] Mount router in `server.js` at `/api/auth`
+### Step 1.2: Build Auth Routes ✅
+- [x] Create `server/routes/authRouter.js`
+- [x] POST `/signup` - validate input, create user, return JWT
+- [x] POST `/login` - find user, verify password, return JWT
+- [x] Use `jsonwebtoken` to sign tokens with your secret
+- [x] Mount router in `server.js` at `/api/auth`
 
 **What you'll learn:** JWT creation, route organization, error responses
 
-### Step 1.3: Create Auth Middleware
-- [ ] Create `server/middleware/authMiddleware.js`
-- [ ] Use `express-jwt` to verify tokens
-- [ ] Middleware should add `req.auth` with user data
-- [ ] Export for use in protected routes
+### Step 1.3: Create Auth Middleware ✅
+- [x] Create `server/middleware/authMiddleware.js`
+- [x] Use `express-jwt` to verify tokens
+- [x] Middleware should add `req.auth` with user data
+- [x] Export for use in protected routes
 
 **What you'll learn:** Middleware pattern, JWT verification, protecting routes
 
-### Step 1.4: Test Auth with Postman/Thunder Client
-- [ ] Test signup creates user and returns token
-- [ ] Test login returns token for valid credentials
-- [ ] Test login fails for wrong password
-- [ ] Test protected route without token (should fail)
-- [ ] Test protected route with token (should succeed)
+### Step 1.4: Test Auth with API Client ✅
+- [x] Test signup creates user and returns token
+- [x] Test login returns token for valid credentials
+- [x] Test login fails for wrong password
+- [x] Test protected route without token (should fail)
+- [x] Test protected route with token (should succeed)
 
 **What you'll learn:** API testing, debugging auth issues
 
-### Step 1.5: Build Frontend Auth Context
-- [ ] Create `client/src/context/AuthContext.jsx`
-- [ ] Manage state: user, token, loading
-- [ ] Create functions: signup, login, logout
-- [ ] Store token in localStorage
-- [ ] Check for existing token on app load
-- [ ] Wrap App in AuthProvider
+### Step 1.5: Build Frontend Auth Context ✅
+- [x] Create `client/src/context/AuthContext.jsx`
+- [x] Manage state: user, token, loading
+- [x] Create functions: signup, login, logout
+- [x] Store token in localStorage
+- [x] Check for existing token on app load
+- [x] Wrap App in AuthProvider
 
 **What you'll learn:** React Context, localStorage, auth state management
 
-### Step 1.6: Build Auth Page UI
-- [ ] Create `client/src/pages/Auth.jsx`
-- [ ] Toggle between Login and Signup forms
-- [ ] Connect forms to AuthContext functions
-- [ ] Handle loading states and errors
-- [ ] Redirect to `/feed` on successful auth
+### Step 1.6: Build Auth Page UI ✅
+- [x] Create `client/src/pages/Auth.jsx`
+- [x] Toggle between Login and Signup forms
+- [x] Connect forms to AuthContext functions
+- [x] Handle loading states and errors
+- [x] Redirect to `/feed` on successful auth
 
 **What you'll learn:** Controlled forms, conditional rendering, navigation
 
-### Step 1.7: Set Up Protected Routes
-- [ ] Create route structure in `App.jsx`
-- [ ] Build `ProtectedRoute` component that checks for token
-- [ ] Redirect to `/` (auth page) if not logged in
-- [ ] Create placeholder pages for Feed, MyPosts, CreatePost
+### Step 1.7: Set Up Protected Routes ✅
+- [x] Create route structure in `App.jsx`
+- [x] Build `ProtectedRoute` component that checks for token
+- [x] Redirect to `/` (auth page) if not logged in
+- [x] Create placeholder pages for Feed, MyPosts, CreatePost
 
 **What you'll learn:** React Router, route guards, redirects
 
 **🎯 Checkpoint:** Users can sign up, log in, and access protected routes. Token persists on refresh.
+
+**✅ Phase 1 Complete!** Backend server running on port 8000, frontend on port 5173.
 
 ---
 
