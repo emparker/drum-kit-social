@@ -195,28 +195,31 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 ### Step 3.1: Create Comment Model
 - [ ] Create `server/models/Comment.js`
-- [ ] Define schema: title, text, user (ref), drummerPost (ref)
-- [ ] Add timestamps, sort by newest first
+- [ ] Define schema: title, text, user (ref), drummerPost (ref), isEdited (Boolean)
+- [ ] Add timestamps (createdAt, updatedAt)
 
-**What you'll learn:** Related models, timestamps
+**What you'll learn:** Related models, timestamps, edit tracking
 
 ### Step 3.2: Build Comment Routes
 - [ ] Create `server/routes/commentRouter.js`
 - [ ] GET `/post/:postId` - get all comments for a post, sorted newest first
 - [ ] POST `/post/:postId` - create comment, attach user and post IDs
+- [ ] PUT `/:commentId` - edit comment (only if creator matches), set isEdited to true
 - [ ] DELETE `/:commentId` - delete (only if creator matches)
 - [ ] Populate user on GET to show username
 
-**What you'll learn:** Nested routes, populating related data
+**What you'll learn:** Nested routes, populating related data, owner-only authorization
 
 ### Step 3.3: Test Comment Endpoints
 - [ ] Create comment on post
-- [ ] Verify comment appears with username
+- [ ] Verify comment appears with username and isEdited is false
 - [ ] Verify newest comments come first
+- [ ] Edit own comment (success), verify isEdited becomes true
+- [ ] Try to edit another user's comment (should return 403)
 - [ ] Delete own comment (success)
-- [ ] Try to delete another user's comment (fail)
+- [ ] Try to delete another user's comment (should return 403)
 
-**🎯 Checkpoint:** Comments fully functional. Ready for frontend!
+**🎯 Checkpoint:** Comments fully functional with CRUD operations. Ready for frontend!
 
 ---
 
@@ -227,7 +230,7 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 - [ ] Create `client/src/api/posts.js`
 - [ ] Functions for all post endpoints (with token in headers)
 - [ ] Create `client/src/api/comments.js`
-- [ ] Functions for all comment endpoints
+- [ ] Functions for all comment endpoints: getComments, createComment, updateComment, deleteComment
 - [ ] Handle errors gracefully, return consistent format
 
 **What you'll learn:** API abstraction, axios configuration
@@ -279,11 +282,16 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 - [ ] Display comments in scrollable container (max height)
 - [ ] Newest at top, oldest at bottom
 - [ ] "+ Add Comment" button reveals form
-- [ ] Comment shows title, text, and username
+- [ ] Comment shows title, text, username, and timestamp
+- [ ] Display small "edited" indicator if `isEdited === true`
+- [ ] Show "Edit" and "Delete" buttons only for user's own comments
+- [ ] Edit button toggles edit mode (inline editing)
 - [ ] Submit calls create comment API
-- [ ] Auto-refresh comments after adding
+- [ ] Save edited comment calls update comment API, sets isEdited to true
+- [ ] Delete calls delete comment API with confirmation
+- [ ] Auto-refresh comments after adding/editing/deleting
 
-**What you'll learn:** Scrollable containers, nested data display
+**What you'll learn:** Scrollable containers, nested data display, conditional rendering, owner-only UI controls
 
 ### Step 5.5: Build Feed Page
 - [ ] Create `client/src/pages/Feed.jsx`

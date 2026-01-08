@@ -130,7 +130,9 @@ drum-kit-social/
   text: String (required),
   user: ObjectId (ref: User),           // Comment author
   drummerPost: ObjectId (ref: DrummerPost),
-  createdAt: Date
+  isEdited: Boolean (default: false),   // Tracks if comment was edited
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
@@ -160,6 +162,7 @@ drum-kit-social/
 |--------|----------|-------------|---------------|
 | GET | `/post/:postId` | Get comments for a post | Yes |
 | POST | `/post/:postId` | Add comment to post | Yes |
+| PUT | `/:commentId` | Edit comment (owner only, marks as edited) | Yes |
 | DELETE | `/:commentId` | Delete comment (owner only) | Yes |
 
 ## Frontend Pages & Routes
@@ -177,7 +180,7 @@ drum-kit-social/
 Manages: user state, token, login/logout/signup functions
 
 ### PostContext
-Manages: posts array, CRUD operations, voting, drum kit updates
+Manages: posts array, CRUD operations, voting, drum kit updates, comment operations (create, update, delete)
 
 ## Key Features & Business Logic
 
@@ -212,9 +215,14 @@ Manages: posts array, CRUD operations, voting, drum kit updates
 **Key Concept:** Full ownership model. Only the creator can edit ANY field on their post. Community interaction is limited to viewing, voting, and commenting.
 
 ### Comments
-- Newest comments appear at top
+- Newest comments appear at top (sorted by `createdAt` descending)
 - Scrollable comment section per card
-- Username displayed with each comment
+- Each comment displays: title, text, username, and timestamp
+- Display small "edited" indicator if `isEdited === true`
+- Edit and delete buttons visible only to comment owner
+- Inline editing: click edit → modify → save (sets `isEdited: true`)
+- Delete with confirmation dialog
+- Full ownership model: only creator can edit or delete their comments
 
 ## Environment Variables
 
