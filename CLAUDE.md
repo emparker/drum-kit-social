@@ -28,6 +28,7 @@ This project is a learning exercise for the MERN stack (MongoDB, Express, React,
 - Clean lines and generous spacing
 - Strong visual hierarchy
 - Creative use of the lime green for CTAs and highlights
+- **Dark Mode:** Full theme support with toggle button, persisted preference in localStorage
 
 ## Tech Stack
 
@@ -173,14 +174,16 @@ drum-kit-social/
 |-------|-----------|-------------|--------|
 | `/` | `Auth.jsx` | Login/Signup page (landing) | ✅ Complete |
 | `/feed` | `Feed.jsx` | Public feed with DrummerCard, voting, and comments | ✅ Complete |
+| `/create` | `CreatePost.jsx` | Create new drummer post (desktop button + mobile FAB) | ✅ Complete |
 | `/my-posts` | `MyPosts.jsx` | User's personal posts (full edit) | 🔄 Planned |
-| `/create` | `CreatePost.jsx` | Create new drummer post | 🔄 Planned |
 
 ## Frontend Components
 
 | Component | Description | Status |
 |-----------|-------------|--------|
 | `ProtectedRoute.jsx` | Route guard for authenticated pages | ✅ Complete |
+| `AppHeader.jsx` | Reusable header with branding, user info, theme toggle, logout | ✅ Complete |
+| `ThemeToggle.jsx` | Dark/light mode toggle button | ✅ Complete |
 | `DrummerCard.jsx` | Display drummer post with kit details, voting, and comments | ✅ Complete |
 | `CommentSection.jsx` | Comment list, create, edit, and delete functionality | ✅ Complete |
 
@@ -188,6 +191,9 @@ drum-kit-social/
 
 ### AuthContext
 Manages: user state, token, login/logout/signup functions
+
+### ThemeContext
+Manages: dark/light theme state, persisted in localStorage
 
 ### PostContext
 Manages: posts array, CRUD operations, voting, drum kit updates, comment operations (create, update, delete)

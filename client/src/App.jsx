@@ -4,6 +4,8 @@ import { AuthContext } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Auth from './pages/Auth';
 import Feed from './pages/Feed';
+import CreatePost from './pages/CreatePost';
+import MyPosts from './pages/MyPosts';
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -22,6 +24,24 @@ function App() {
         element={
           <ProtectedRoute>
             <Feed />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/create"
+        element={
+          <ProtectedRoute>
+            <CreatePost />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/my-posts"
+        element={
+          <ProtectedRoute>
+            <MyPosts />
           </ProtectedRoute>
         }
       />

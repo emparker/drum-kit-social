@@ -323,25 +323,46 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 **🎯 Checkpoint:** Feed page displays all posts. Voting and commenting work perfectly!
 
-**✅ Phase 5 Complete!** Fully interactive feed with DrummerCard components, voting system, and comment sections with CRUD operations.
+### Step 5.6: Add Dark Mode Support ✅
+- [x] Create `client/src/context/ThemeContext.jsx`
+- [x] Create `client/src/components/ThemeToggle.jsx` component
+- [x] Add CSS dark mode overrides in `index.css`
+- [x] Persist theme preference in localStorage
+- [x] Add theme toggle to header
+
+**What you'll learn:** CSS custom properties, theme switching, localStorage persistence
+
+**✅ Phase 5 Complete!** Fully interactive feed with DrummerCard components, voting system, comment sections with CRUD operations, and dark mode support.
 
 ---
 
-## Phase 6: Frontend - Create Post Page
+## Phase 6: Frontend - Create Post Page ✅ COMPLETED
 **Goal:** Allow users to create new drummer posts.
 
-### Step 6.1: Build Create Post Form
-- [ ] Create `client/src/pages/CreatePost.jsx`
-- [ ] Form field for drummer name (required)
-- [ ] Form field for album (required)
-- [ ] Optional fields for drum kit info
-- [ ] Optional fields for add-ons
-- [ ] Submit creates post via context
-- [ ] Redirect to feed on success
+### Step 6.1: Build Create Post Form ✅
+- [x] Create `client/src/pages/CreatePost.jsx`
+- [x] Form field for drummer name (required)
+- [x] Form field for album (required)
+- [x] Optional fields for drum kit info (5-piece kit in grid layout)
+- [x] Optional fields for add-ons (cymbals, hardware, effects in grid)
+- [x] Submit creates post via context
+- [x] Redirect to feed on success
+- [x] Three-section form layout with visual hierarchy
+- [x] Nested state management for drumKit and addOns
+- [x] Client-side validation with error messages
+- [x] Placeholder examples for guidance
 
-**What you'll learn:** Form handling, validation, redirects
+### Step 6.2: Add Navigation ✅
+- [x] Extract `AppHeader.jsx` component for reusable header
+- [x] Add "Create Post" button to Feed page (desktop/tablet)
+- [x] Add Floating Action Button (FAB) for mobile navigation
+- [x] CSS media queries toggle button visibility by screen size
 
-**🎯 Checkpoint:** Users can create new drummer posts.
+**What you'll learn:** Form handling with nested state, validation, responsive navigation patterns, component reusability
+
+**🎯 Checkpoint:** Users can create new drummer posts from Feed page via desktop button or mobile FAB.
+
+**✅ Phase 6 Complete!** Full create post functionality with three-section form, responsive navigation (desktop button + mobile FAB), and AppHeader component extracted for reuse.
 
 ---
 

@@ -4,13 +4,13 @@ import { PostContext } from '../context/PostContext';
 import AppHeader from '../components/AppHeader';
 import DrummerCard from '../components/DrummerCard';
 
-export default function Feed() {
+export default function MyPosts() {
   const navigate = useNavigate();
-  const { posts, isLoading, error, fetchAllPosts } = useContext(PostContext);
+  const { userPosts, isLoading, error, fetchUserPosts } = useContext(PostContext);
 
-  // Fetch all posts on component mount
+  // Fetch user's posts on component mount
   useEffect(() => {
-    fetchAllPosts();
+    fetchUserPosts();
   }, []);
 
   return (
@@ -19,7 +19,7 @@ export default function Feed() {
 
       <main className="feed-container">
         <div className="feed-header">
-          <h2>Drummer Feed</h2>
+          <h2>My Posts</h2>
           <button
             onClick={() => navigate('/create')}
             className="btn-primary create-btn-desktop"
@@ -29,23 +29,28 @@ export default function Feed() {
         </div>
 
         {/* Loading State */}
-        {isLoading && <p className="placeholder-text">Loading posts...</p>}
+        {isLoading && <p className="placeholder-text">Loading your posts...</p>}
 
         {/* Error State */}
         {error && <div className="error-message">{error}</div>}
 
         {/* Empty State */}
-        {!isLoading && !error && posts.length === 0 && (
+        {!isLoading && !error && userPosts.length === 0 && (
           <p className="placeholder-text">
-            No posts yet! Be the first to share a drummer's kit configuration.
+            Be a real drummer and make that first post!
           </p>
         )}
 
         {/* Posts List */}
-        {!isLoading && !error && posts.length > 0 && (
+        {!isLoading && !error && userPosts.length > 0 && (
           <div className="posts-list">
-            {posts.map((post) => (
-              <DrummerCard key={post._id} post={post} />
+            {userPosts.map((post) => (
+              <DrummerCard
+                key={post._id}
+                post={post}
+                isOwner={true}
+                showEditControls={true}
+              />
             ))}
           </div>
         )}
