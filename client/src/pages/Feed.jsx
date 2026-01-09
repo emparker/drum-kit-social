@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { PostContext } from '../context/PostContext';
+import ThemeToggle from '../components/ThemeToggle';
 import DrummerCard from '../components/DrummerCard';
 
 export default function Feed() {
@@ -18,6 +19,7 @@ export default function Feed() {
         <h1>🥁 Drum Kit Social</h1>
         <div className="user-info">
           <span>Welcome, {user?.username}!</span>
+          <ThemeToggle />
           <button onClick={logout} className="btn-secondary">
             Logout
           </button>
