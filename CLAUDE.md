@@ -175,7 +175,7 @@ drum-kit-social/
 | `/` | `Auth.jsx` | Login/Signup page (landing) | ✅ Complete |
 | `/feed` | `Feed.jsx` | Public feed with DrummerCard, voting, and comments | ✅ Complete |
 | `/create` | `CreatePost.jsx` | Create new drummer post (desktop button + mobile FAB) | ✅ Complete |
-| `/my-posts` | `MyPosts.jsx` | User's personal posts (full edit) | 🔄 Planned |
+| `/my-posts` | `MyPosts.jsx` | User's personal posts (full edit and delete) | ✅ Complete |
 
 ## Frontend Components
 
@@ -197,6 +197,21 @@ Manages: dark/light theme state, persisted in localStorage
 
 ### PostContext
 Manages: posts array, CRUD operations, voting, drum kit updates, comment operations (create, update, delete)
+
+## Navigation & User Flow
+
+### App Navigation Structure ✅ Implemented
+- **AppHeader**: Reusable header component with:
+  - App branding (🥁 Drum Kit Social)
+  - Navigation links (Feed, My Posts) with active state highlighting
+  - User welcome message with username
+  - Theme toggle button
+  - Logout button
+- **Responsive Create Post Navigation**:
+  - Desktop/tablet: "Create Post" button in page header
+  - Mobile: Floating Action Button (FAB) with "+" icon
+  - Both navigate to `/create` page
+- **Protected Routes**: All authenticated pages (Feed, Create, My Posts) require valid JWT token
 
 ## Key Features & Business Logic
 
@@ -221,7 +236,7 @@ Manages: posts array, CRUD operations, voting, drum kit updates, comment operati
 - Posts sorted by total likes (descending)
 - **Implementation:** Emoji buttons (👍👎) with vote counts, lime green highlight when voted, optimistic UI updates
 
-### Editing Permissions
+### Editing Permissions ✅ Implemented
 | Field | Who Can Edit | Where |
 |-------|--------------|-------|
 | Drummer Name | Post creator only | My Posts page |
@@ -231,6 +246,14 @@ Manages: posts array, CRUD operations, voting, drum kit updates, comment operati
 | Delete Post | Post creator only | My Posts page |
 
 **Key Concept:** Full ownership model. Only the creator can edit ANY field on their post. Community interaction is limited to viewing, voting, and commenting.
+
+**Implementation:**
+- DrummerCard component accepts `showEditControls` and `isOwner` props
+- Edit mode toggles inline text inputs for all fields
+- Save button validates required fields and calls `updatePost()`
+- Cancel button reverts form state to original values
+- Delete button shows browser confirmation dialog before calling `deletePost()`
+- Edit controls only visible on My Posts page, not in public Feed
 
 ### Comments ✅ Implemented
 - Newest comments appear at top (sorted by `createdAt` descending)
