@@ -190,119 +190,140 @@ This roadmap breaks down the project into phases. Each phase builds on the previ
 
 ---
 
-## Phase 3: Comments - Backend
+## Phase 3: Comments - Backend ✅ COMPLETED
 **Goal:** Add commenting functionality to posts.
 
-### Step 3.1: Create Comment Model
-- [ ] Create `server/models/Comment.js`
-- [ ] Define schema: title, text, user (ref), drummerPost (ref), isEdited (Boolean)
-- [ ] Add timestamps (createdAt, updatedAt)
+### Step 3.1: Create Comment Model ✅
+- [x] Create `server/models/Comment.js`
+- [x] Define schema: title, text, user (ref), drummerPost (ref), isEdited (Boolean)
+- [x] Add timestamps (createdAt, updatedAt)
 
 **What you'll learn:** Related models, timestamps, edit tracking
 
-### Step 3.2: Build Comment Routes
-- [ ] Create `server/routes/commentRouter.js`
-- [ ] GET `/post/:postId` - get all comments for a post, sorted newest first
-- [ ] POST `/post/:postId` - create comment, attach user and post IDs
-- [ ] PUT `/:commentId` - edit comment (only if creator matches), set isEdited to true
-- [ ] DELETE `/:commentId` - delete (only if creator matches)
-- [ ] Populate user on GET to show username
+### Step 3.2: Build Comment Routes ✅
+- [x] Create `server/routes/commentRouter.js`
+- [x] GET `/post/:postId` - get all comments for a post, sorted newest first
+- [x] POST `/post/:postId` - create comment, attach user and post IDs
+- [x] PUT `/:commentId` - edit comment (only if creator matches), set isEdited to true
+- [x] DELETE `/:commentId` - delete (only if creator matches)
+- [x] Populate user on GET to show username
 
 **What you'll learn:** Nested routes, populating related data, owner-only authorization
 
-### Step 3.3: Test Comment Endpoints
-- [ ] Create comment on post
-- [ ] Verify comment appears with username and isEdited is false
-- [ ] Verify newest comments come first
-- [ ] Edit own comment (success), verify isEdited becomes true
-- [ ] Try to edit another user's comment (should return 403)
-- [ ] Delete own comment (success)
-- [ ] Try to delete another user's comment (should return 403)
+### Step 3.3: Test Comment Endpoints ✅
+- [x] Create comment on post
+- [x] Verify comment appears with username and isEdited is false
+- [x] Verify newest comments come first
+- [x] Edit own comment (success), verify isEdited becomes true
+- [x] Try to edit another user's comment (should return 403)
+- [x] Delete own comment (success)
+- [x] Try to delete another user's comment (should return 403)
 
 **🎯 Checkpoint:** Comments fully functional with CRUD operations. Ready for frontend!
 
+**✅ Phase 3 Complete!** Comment system fully functional with ownership model and edit tracking.
+
 ---
 
-## Phase 4: Frontend - Post Context & API Layer
+## Phase 4: Frontend - Post Context & API Layer ✅ COMPLETED
 **Goal:** Set up state management and API calls for posts.
 
-### Step 4.1: Create API Helper Functions
-- [ ] Create `client/src/api/posts.js`
-- [ ] Functions for all post endpoints (with token in headers)
-- [ ] Create `client/src/api/comments.js`
-- [ ] Functions for all comment endpoints: getComments, createComment, updateComment, deleteComment
-- [ ] Handle errors gracefully, return consistent format
+### Step 4.1: Create API Helper Functions ✅
+- [x] Create `client/src/api/axiosInstance.js` - configured with JWT interceptors
+- [x] Create `client/src/api/postsApi.js` - all post endpoints (getAllPosts, getUserPosts, createPost, updatePost, deletePost, likePost, dislikePost)
+- [x] Create `client/src/api/commentsApi.js` - all comment endpoints (getCommentsByPost, createComment, updateComment, deleteComment)
+- [x] Automatic JWT token attachment via request interceptor
+- [x] Global error handling via response interceptor (401 redirects to login)
+- [x] Consistent error format returned from all API calls
 
-**What you'll learn:** API abstraction, axios configuration
+**What you'll learn:** API abstraction, axios configuration, request/response interceptors
 
-### Step 4.2: Build Post Context
-- [ ] Create `client/src/context/PostContext.jsx`
-- [ ] State: posts array, userPosts array, loading, error
-- [ ] Actions: fetchAllPosts, fetchUserPosts, createPost, updatePost, deletePost, vote
-- [ ] Consider `useReducer` for cleaner state updates (optional but recommended)
-- [ ] Wrap App in PostProvider (inside AuthProvider)
+### Step 4.2: Build Post Context ✅
+- [x] Create `client/src/context/PostContext.jsx`
+- [x] State: posts array, userPosts array, isLoading, error
+- [x] CRUD operations: fetchAllPosts, fetchUserPosts, fetchPostById, createPost, updatePost, deletePost
+- [x] Voting operations: toggleLike, toggleDislike (with optimistic UI updates)
+- [x] Comment operations: fetchCommentsByPost, createComment, updateComment, deleteComment
+- [x] Consume AuthContext for user info
+- [x] Wrap App in PostProvider (inside AuthProvider in main.jsx)
 
-**What you'll learn:** Context for data management, reducer pattern
+**What you'll learn:** Context for data management, optimistic updates, context composition
 
-**🎯 Checkpoint:** Context set up and API calls working (test with console.log).
+### Step 4.3: Create Utility Helpers ✅
+- [x] Create `client/src/utils/dateUtils.js`
+- [x] formatDate() - readable date format (e.g., "Jan 15, 2024 at 3:45 PM")
+- [x] getRelativeTime() - relative time from now (e.g., "2 hours ago")
+- [x] formatShortDate() - short date format (e.g., "Jan 15, 2024")
+
+**What you'll learn:** Utility functions, date formatting
+
+**🎯 Checkpoint:** Context set up and API calls working. All state management ready for UI components.
+
+**✅ Phase 4 Complete!** Complete data layer built with axios, PostContext, and optimistic UI updates. Frontend ready for UI components!
 
 ---
 
-## Phase 5: Frontend - Feed Page (Public Posts)
+## Phase 5: Frontend - Feed Page (Public Posts) ✅ COMPLETED
 **Goal:** Build the main feed showing all drummer posts.
 
-### Step 5.1: Build the DrummerCard Component
-- [ ] Create `client/src/components/DrummerCard.jsx`
-- [ ] Display drummer name prominently
-- [ ] Show drum kit info in organized layout (two columns as per wireframe)
-- [ ] Show add-ons section
-- [ ] Display like/dislike buttons with counts
-- [ ] Show "Posted by: username"
-- [ ] Style with Vanilla CSS (edgy, bold, creative theme)
+### Step 5.1: Build the DrummerCard Component ✅
+- [x] Create `client/src/components/DrummerCard.jsx`
+- [x] Display drummer name prominently with Michroma all-caps typography
+- [x] Show drum kit info in organized two-column layout
+- [x] Show add-ons section
+- [x] Display like/dislike buttons with counts
+- [x] Show "Posted by: username"
+- [x] Style with Vanilla CSS (edgy, bold, creative theme)
 
 **What you'll learn:** Component composition, props, CSS layout
 
-### Step 5.2: Add Voting to DrummerCard
-- [ ] Like button calls vote function from context
-- [ ] Dislike button calls vote function
-- [ ] Visual feedback: highlight if user has voted
-- [ ] Disable buttons during API call (prevent double-click)
+### Step 5.2: Add Voting to DrummerCard ✅
+- [x] Like button calls vote function from context
+- [x] Dislike button calls vote function
+- [x] Visual feedback: lime green highlight if user has voted
+- [x] Disable buttons during API call (prevent double-click)
+- [x] Toggle behavior (click again to remove vote)
+- [x] Mutually exclusive voting (like removes dislike and vice versa)
 
 **What you'll learn:** Event handling, optimistic UI updates
 
-### Step 5.3: Display Album Prominently
-- [ ] Album title should be large and bold (more prominent than kit data)
-- [ ] Position album between drummer name and kit details
-- [ ] Use CSS to create clear visual hierarchy: Name → Album → Kit
-- [ ] Consider using the lime green accent for album display
+### Step 5.3: Display Album Prominently ✅
+- [x] Album title large and bold (more prominent than kit data)
+- [x] Position album between drummer name and kit details
+- [x] Clear visual hierarchy: Name (Michroma) → Album (lime green) → Kit
+- [x] Lime green accent with highlighted background box
 
 **What you'll learn:** Visual hierarchy, CSS typography
 
-### Step 5.4: Build Comment Section
-- [ ] Display comments in scrollable container (max height)
-- [ ] Newest at top, oldest at bottom
-- [ ] "+ Add Comment" button reveals form
-- [ ] Comment shows title, text, username, and timestamp
-- [ ] Display small "edited" indicator if `isEdited === true`
-- [ ] Show "Edit" and "Delete" buttons only for user's own comments
-- [ ] Edit button toggles edit mode (inline editing)
-- [ ] Submit calls create comment API
-- [ ] Save edited comment calls update comment API, sets isEdited to true
-- [ ] Delete calls delete comment API with confirmation
-- [ ] Auto-refresh comments after adding/editing/deleting
+### Step 5.4: Build Comment Section ✅
+- [x] Display comments in scrollable container (max height 400px)
+- [x] Newest at top, oldest at bottom
+- [x] "+ Add Comment" button reveals form
+- [x] Comment shows title, text, username, and relative timestamp
+- [x] Display "edited" badge if `isEdited === true`
+- [x] Show Edit (✏️) and Delete (🗑️) buttons only for user's own comments
+- [x] Edit button toggles inline edit mode
+- [x] Form validation with error messages for empty submissions
+- [x] Submit calls create comment API
+- [x] Save edited comment calls update comment API, sets isEdited to true
+- [x] Delete calls delete comment API with confirmation dialog
+- [x] Auto-refresh comments after adding/editing/deleting
 
-**What you'll learn:** Scrollable containers, nested data display, conditional rendering, owner-only UI controls
+**What you'll learn:** Scrollable containers, nested data display, conditional rendering, owner-only UI controls, form validation
 
-### Step 5.5: Build Feed Page
-- [ ] Create `client/src/pages/Feed.jsx`
-- [ ] Fetch all posts on mount (use PostContext)
-- [ ] Map posts to DrummerCard components
-- [ ] Show loading state
-- [ ] Handle empty state (no posts yet)
+### Step 5.5: Build Feed Page ✅
+- [x] Updated `client/src/pages/Feed.jsx`
+- [x] Fetch all posts on mount (use PostContext)
+- [x] Map posts to DrummerCard components
+- [x] Show loading state
+- [x] Handle empty state (no posts yet)
+- [x] Handle error state
 
 **What you'll learn:** Page composition, loading states
 
-**🎯 Checkpoint:** Feed page displays all posts. Voting, editing, and commenting work.
+**🎯 Checkpoint:** Feed page displays all posts. Voting and commenting work perfectly!
+
+**✅ Phase 5 Complete!** Fully interactive feed with DrummerCard components, voting system, and comment sections with CRUD operations.
 
 ---
 

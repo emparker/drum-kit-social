@@ -10,8 +10,6 @@ router.get('/', async (req, res) => {
 
     // Sort by likes count (descending) - posts with most likes appear first
     // NOTE: For future refactor - could use Mongoose virtual properties (likeCount)
-    // or MongoDB aggregation pipeline for more efficient sorting at the DB level.
-    // For now, sorting in JavaScript is simpler and easier to understand.
     posts.sort((a, b) => b.likes.length - a.likes.length);
 
     res.status(200).json({

@@ -1,8 +1,16 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { PostContext } from '../context/PostContext';
+import DrummerCard from '../components/DrummerCard';
 
 export default function Feed() {
   const { user, logout } = useContext(AuthContext);
+  const { posts, isLoading, error, fetchAllPosts } = useContext(PostContext);
+
+  // Fetch all posts on component mount
+  useEffect(() => {
+    fetchAllPosts();
+  }, []);
 
   return (
     <div className="feed-page">
@@ -18,10 +26,28 @@ export default function Feed() {
 
       <main className="feed-container">
         <h2>Drummer Feed</h2>
-        <p>This is where all the drummer posts will appear!</p>
-        <p className="placeholder-text">
-          Phase 2 will add the ability to create and view drummer posts.
-        </p>
+
+        {/* Loading State */}
+        {isLoading && <p className="placeholder-text">Loading posts...</p>}
+
+        {/* Error State */}
+        {error && <div className="error-message">{error}</div>}
+
+        {/* Empty State */}
+        {!isLoading && !error && posts.length === 0 && (
+          <p className="placeholder-text">
+            No posts yet! Be the first to share a drummer's kit configuration.
+          </p>
+        )}
+
+        {/* Posts List */}
+        {!isLoading && !error && posts.length > 0 && (
+          <div className="posts-list">
+            {posts.map((post) => (
+              <DrummerCard key={post._id} post={post} />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

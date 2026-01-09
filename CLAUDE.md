@@ -17,9 +17,11 @@ This project is a learning exercise for the MERN stack (MongoDB, Express, React,
 - **Contrast:** High contrast for modern, punchy aesthetic
 
 **Typography:**
-- Bold, modern sans-serif fonts
-- Large, impactful headings
-- Clean, readable body text
+- **Display Font (H1-H3):** Michroma - All-caps with increased letter-spacing (3-5%) for high-end cymbal branding aesthetic
+- **Sub-headings (H4-H5):** Inter Bold - Bridge between display and body text
+- **Body Text:** Inter Regular - Clean, readable, professional
+- Large, impactful headings create strong visual hierarchy
+- Fonts loaded via Google Fonts CDN
 
 **UI Approach:**
 - Minimalist with bold accent colors
@@ -167,12 +169,20 @@ drum-kit-social/
 
 ## Frontend Pages & Routes
 
-| Route | Component | Description |
-|-------|-----------|-------------|
-| `/` | `Auth.jsx` | Login/Signup page (landing) |
-| `/feed` | `Feed.jsx` | Public feed - all drummer posts |
-| `/my-posts` | `MyPosts.jsx` | User's personal posts (full edit) |
-| `/create` | `CreatePost.jsx` | Create new drummer post |
+| Route | Component | Description | Status |
+|-------|-----------|-------------|--------|
+| `/` | `Auth.jsx` | Login/Signup page (landing) | ✅ Complete |
+| `/feed` | `Feed.jsx` | Public feed with DrummerCard, voting, and comments | ✅ Complete |
+| `/my-posts` | `MyPosts.jsx` | User's personal posts (full edit) | 🔄 Planned |
+| `/create` | `CreatePost.jsx` | Create new drummer post | 🔄 Planned |
+
+## Frontend Components
+
+| Component | Description | Status |
+|-----------|-------------|--------|
+| `ProtectedRoute.jsx` | Route guard for authenticated pages | ✅ Complete |
+| `DrummerCard.jsx` | Display drummer post with kit details, voting, and comments | ✅ Complete |
+| `CommentSection.jsx` | Comment list, create, edit, and delete functionality | ✅ Complete |
 
 ## Context Providers
 
@@ -190,18 +200,20 @@ Manages: posts array, CRUD operations, voting, drum kit updates, comment operati
 3. JWT attached to all API requests via Authorization header
 4. Protected routes check for valid token
 
-### Album Field & Display
+### Album Field & Display ✅ Implemented
 - Album is a required field connecting the drummer to a specific recording
-- Album title should be visually prominent in the UI (larger, bolder than drum kit data)
-- Album should be displayed separately from drum kit information
-- Example: "Dave Grohl - Nevermind" (album) with kit details below
+- **Implementation:** Album displayed in highlighted lime green box between drummer name and kit details
+- Visual hierarchy: Drummer name (Michroma all-caps) → Album (lime green, Inter Bold) → Kit details
+- Album has its own section with "Album:" label and prominent title styling
+- Clear separation from drum kit information for improved readability
 
-### Voting Rules
+### Voting Rules ✅ Implemented
 - Each user can ONLY like OR dislike a post (not both)
-- Clicking like when already liked → removes like
-- Clicking dislike when already disliked → removes dislike
-- Clicking like when disliked → removes dislike, adds like
+- Clicking like when already liked → removes like (toggle off)
+- Clicking dislike when already disliked → removes dislike (toggle off)
+- Clicking like when disliked → removes dislike, adds like (mutually exclusive)
 - Posts sorted by total likes (descending)
+- **Implementation:** Emoji buttons (👍👎) with vote counts, lime green highlight when voted, optimistic UI updates
 
 ### Editing Permissions
 | Field | Who Can Edit | Where |
@@ -214,15 +226,16 @@ Manages: posts array, CRUD operations, voting, drum kit updates, comment operati
 
 **Key Concept:** Full ownership model. Only the creator can edit ANY field on their post. Community interaction is limited to viewing, voting, and commenting.
 
-### Comments
+### Comments ✅ Implemented
 - Newest comments appear at top (sorted by `createdAt` descending)
-- Scrollable comment section per card
-- Each comment displays: title, text, username, and timestamp
-- Display small "edited" indicator if `isEdited === true`
-- Edit and delete buttons visible only to comment owner
-- Inline editing: click edit → modify → save (sets `isEdited: true`)
-- Delete with confirmation dialog
+- Scrollable comment section per card (max-height: 400px)
+- Each comment displays: title (bold), text, username, and relative timestamp ("2 hours ago")
+- Display small "edited" badge if `isEdited === true`
+- Edit (✏️) and delete (🗑️) emoji buttons visible only to comment owner
+- Inline editing: click edit → modify in-place → save (sets `isEdited: true`)
+- Delete with browser confirmation dialog
 - Full ownership model: only creator can edit or delete their comments
+- **Implementation:** CommentSection component with form validation, error messages for empty submissions, optimistic UI updates
 
 ## Environment Variables
 
