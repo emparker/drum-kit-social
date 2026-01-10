@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import drumKitIcon from '../assets/dks-drum-kit.png';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -46,7 +47,10 @@ export default function Auth() {
   return (
     <div className="auth-page">
       <div className="auth-container">
-        <h1>🥁 Drum Kit Social</h1>
+        <h1>
+          <img src={drumKitIcon} alt="Drum Kit" className="drum-icon" />
+          Drum Kit Social
+        </h1>
         <p className="tagline">Share and explore pro drummer kit configurations</p>
 
         <div className="auth-card">

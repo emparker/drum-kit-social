@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
+import drumKitIcon from '../assets/dks-drum-kit.png';
 
 export default function AppHeader() {
   const { user, logout } = useContext(AuthContext);
@@ -9,7 +10,10 @@ export default function AppHeader() {
 
   return (
     <header className="app-header">
-      <h1>🥁 Drum Kit Social</h1>
+      <h1>
+        <img src={drumKitIcon} alt="Drum Kit" className="drum-icon" />
+        Drum Kit Social
+      </h1>
 
       <nav className="app-nav">
         <Link
