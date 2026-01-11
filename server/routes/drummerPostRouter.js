@@ -77,22 +77,55 @@ router.get('/:postId', async (req, res) => {
 // POST /api/posts - Create new drummer post
 router.post('/', async (req, res) => {
   try {
-    const { drummerName, album, drumKit, addOns } = req.body;
+    const {
+      drummerName,
+      band,
+      album,
+      drumKitModel,
+      material,
+      color,
+      kitPieceCount,
+      bass,
+      tom1,
+      tom2,
+      tom3,
+      snare,
+      crash,
+      ride,
+      splash,
+      china,
+      hiHat,
+      extras
+    } = req.body;
 
     // Validate required fields
-    if (!drummerName || !album) {
+    if (!drummerName || !band || !album) {
       return res.status(400).json({
         success: false,
-        message: 'Drummer name and album are required'
+        message: 'Drummer name, band, and album are required'
       });
     }
 
     // Create new post with user from JWT token
     const newPost = new DrummerPost({
       drummerName,
+      band,
       album,
-      drumKit: drumKit || {},
-      addOns: addOns || {},
+      drumKitModel,
+      material,
+      color,
+      kitPieceCount,
+      bass,
+      tom1,
+      tom2,
+      tom3,
+      snare,
+      crash,
+      ride,
+      splash,
+      china,
+      hiHat,
+      extras: extras || [],
       user: req.auth._id  // Attach logged-in user's ID
     });
 
@@ -135,12 +168,27 @@ router.put('/:postId', async (req, res) => {
       });
     }
 
-    const { drummerName, album, drumKit, addOns } = req.body;
+    // Update flat fields individually
+    const updates = req.body;
 
-    if (drummerName) post.drummerName = drummerName;
-    if (album) post.album = album;
-    if (drumKit) post.drumKit = { ...post.drumKit, ...drumKit };
-    if (addOns) post.addOns = { ...post.addOns, ...addOns };
+    if (updates.drummerName !== undefined) post.drummerName = updates.drummerName;
+    if (updates.band !== undefined) post.band = updates.band;
+    if (updates.album !== undefined) post.album = updates.album;
+    if (updates.drumKitModel !== undefined) post.drumKitModel = updates.drumKitModel;
+    if (updates.material !== undefined) post.material = updates.material;
+    if (updates.color !== undefined) post.color = updates.color;
+    if (updates.kitPieceCount !== undefined) post.kitPieceCount = updates.kitPieceCount;
+    if (updates.bass !== undefined) post.bass = updates.bass;
+    if (updates.tom1 !== undefined) post.tom1 = updates.tom1;
+    if (updates.tom2 !== undefined) post.tom2 = updates.tom2;
+    if (updates.tom3 !== undefined) post.tom3 = updates.tom3;
+    if (updates.snare !== undefined) post.snare = updates.snare;
+    if (updates.crash !== undefined) post.crash = updates.crash;
+    if (updates.ride !== undefined) post.ride = updates.ride;
+    if (updates.splash !== undefined) post.splash = updates.splash;
+    if (updates.china !== undefined) post.china = updates.china;
+    if (updates.hiHat !== undefined) post.hiHat = updates.hiHat;
+    if (updates.extras !== undefined) post.extras = updates.extras;
 
     await post.save();
     await post.populate('user', 'username');

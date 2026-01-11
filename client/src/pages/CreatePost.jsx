@@ -3,54 +3,91 @@ import { useNavigate } from 'react-router-dom';
 import { PostContext } from '../context/PostContext';
 import AppHeader from '../components/AppHeader';
 
+// Extras category options for dropdown
+const EXTRAS_CATEGORIES = [
+  { value: 'bass', label: 'Bass Drum' },
+  { value: 'tom', label: 'Tom' },
+  { value: 'snare', label: 'Snare' },
+  { value: 'crash', label: 'Crash Cymbal' },
+  { value: 'ride', label: 'Ride Cymbal' },
+  { value: 'splash', label: 'Splash' },
+  { value: 'china', label: 'China' },
+  { value: 'hi-hat', label: 'Hi-Hat' },
+  { value: 'hardware', label: 'Hardware' },
+  { value: 'kick-pedal', label: 'Kick Pedal' },
+  { value: 'effects', label: 'Effects' },
+];
+
 export default function CreatePost() {
   const navigate = useNavigate();
   const { createPost } = useContext(PostContext);
 
+  // Flat form state (no nested objects)
   const [formData, setFormData] = useState({
     drummerName: '',
+    band: '',
     album: '',
-    drumKit: {
-      kickDrum: '',
-      snare: '',
-      rackTom1: '',
-      rackTom2: '',
-      floorTom: '',
-    },
-    addOns: {
-      hiHats: '',
-      rideCymbal: '',
-      crashCymbal: '',
-      hardware: '',
-      effects: '',
-    },
+    // Kit Metadata
+    drumKitModel: '',
+    material: '',
+    color: '',
+    kitPieceCount: '',
+    // Drums
+    bass: '',
+    tom1: '',
+    tom2: '',
+    tom3: '',
+    snare: '',
+    // Cymbals
+    crash: '',
+    ride: '',
+    splash: '',
+    china: '',
+    hiHat: '',
   });
+
+  // Separate state for dynamic extras array
+  const [extras, setExtras] = useState([]);
 
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handle input changes for both flat and nested fields
+  // Handle input changes for flat fields (no more dot notation needed!)
   function handleChange(e) {
     const { name, value } = e.target;
-    setError(''); // Clear error when user starts typing
+    setError('');
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
 
-    if (name.includes('.')) {
-      // Handle nested fields (e.g., "drumKit.kickDrum")
-      const [section, field] = name.split('.');
-      setFormData((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [field]: value,
-        },
-      }));
-    } else {
-      // Handle flat fields (e.g., "drummerName")
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+  // Handle extras category change
+  function handleExtrasCategoryChange(index, value) {
+    setExtras((prev) =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, category: value } : extra
+      )
+    );
+  }
+
+  // Handle extras value change
+  function handleExtrasValueChange(index, value) {
+    setExtras((prev) =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, value: value } : extra
+      )
+    );
+  }
+
+  // Add new extra
+  function handleAddExtra() {
+    setExtras((prev) => [...prev, { category: '', value: '' }]);
+  }
+
+  // Remove extra
+  function handleRemoveExtra(index) {
+    setExtras((prev) => prev.filter((_, i) => i !== index));
   }
 
   // Handle form submission
@@ -58,19 +95,27 @@ export default function CreatePost() {
     e.preventDefault();
     setError('');
 
-    // Validate required fields
-    if (!formData.drummerName.trim() || !formData.album.trim()) {
-      setError('Please fill in both drummer name and album');
+    // Validate required fields (now includes band)
+    if (!formData.drummerName.trim() || !formData.band.trim() || !formData.album.trim()) {
+      setError('Please fill in drummer name, band, and album');
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const result = await createPost(formData);
+      // Build post data with flat structure
+      const postData = {
+        ...formData,
+        // Convert kitPieceCount to number if provided
+        kitPieceCount: formData.kitPieceCount ? parseInt(formData.kitPieceCount, 10) : undefined,
+        // Filter out empty extras (both category and value must be present)
+        extras: extras.filter((extra) => extra.category && extra.value.trim()),
+      };
+
+      const result = await createPost(postData);
 
       if (result.success) {
-        // Navigate to feed on success
         navigate('/feed');
       } else {
         setError(result.message || 'Failed to create post');
@@ -104,7 +149,7 @@ export default function CreatePost() {
         </div>
 
         <form onSubmit={handleSubmit} className="create-post-form">
-          {/* SECTION 1: Required Fields */}
+          {/* SECTION 1: Required Fields - Drummer, Band, Album */}
           <section className="form-section">
             <h4>Drummer & Album Details</h4>
             <div className="form-group">
@@ -115,6 +160,19 @@ export default function CreatePost() {
                 type="text"
                 placeholder="e.g., Neil Peart"
                 value={formData.drummerName}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="band">Band *</label>
+              <input
+                id="band"
+                name="band"
+                type="text"
+                placeholder="e.g., Rush"
+                value={formData.band}
                 onChange={handleChange}
                 disabled={isSubmitting}
                 required
@@ -135,21 +193,116 @@ export default function CreatePost() {
             </div>
           </section>
 
-          {/* SECTION 2: 5-Piece Kit (Optional) */}
+          {/* SECTION 2: Kit Metadata (Optional) */}
           <section className="form-section">
-            <h4>5-Piece Kit (Optional)</h4>
+            <h4>Kit Information (Optional)</h4>
+            <p className="helper-text">
+              Details about the drum kit brand and configuration
+            </p>
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="drumKitModel">Kit Model</label>
+                <input
+                  id="drumKitModel"
+                  name="drumKitModel"
+                  type="text"
+                  placeholder="e.g., Tama Starclassic"
+                  value={formData.drumKitModel}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="material">Material</label>
+                <input
+                  id="material"
+                  name="material"
+                  type="text"
+                  placeholder="e.g., Birch/Maple"
+                  value={formData.material}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="color">Color/Finish</label>
+                <input
+                  id="color"
+                  name="color"
+                  type="text"
+                  placeholder="e.g., Starburst Fade"
+                  value={formData.color}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="kitPieceCount">Piece Count</label>
+                <input
+                  id="kitPieceCount"
+                  name="kitPieceCount"
+                  type="number"
+                  min="1"
+                  placeholder="e.g., 5"
+                  value={formData.kitPieceCount}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 3: Drums (Optional) */}
+          <section className="form-section">
+            <h4>Drums (Optional)</h4>
             <p className="helper-text">
               Add specific drum models used on this album
             </p>
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="kickDrum">Kick Drum</label>
+                <label htmlFor="bass">Bass Drum</label>
                 <input
-                  id="kickDrum"
-                  name="drumKit.kickDrum"
+                  id="bass"
+                  name="bass"
                   type="text"
                   placeholder='e.g., DW 22x18"'
-                  value={formData.drumKit.kickDrum}
+                  value={formData.bass}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="tom1">Tom 1</label>
+                <input
+                  id="tom1"
+                  name="tom1"
+                  type="text"
+                  placeholder='e.g., DW 10x8"'
+                  value={formData.tom1}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="tom2">Tom 2</label>
+                <input
+                  id="tom2"
+                  name="tom2"
+                  type="text"
+                  placeholder='e.g., DW 12x9"'
+                  value={formData.tom2}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="tom3">Tom 3</label>
+                <input
+                  id="tom3"
+                  name="tom3"
+                  type="text"
+                  placeholder='e.g., DW 14x12"'
+                  value={formData.tom3}
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
@@ -158,46 +311,10 @@ export default function CreatePost() {
                 <label htmlFor="snare">Snare</label>
                 <input
                   id="snare"
-                  name="drumKit.snare"
+                  name="snare"
                   type="text"
                   placeholder='e.g., Ludwig Black Beauty 14x5"'
-                  value={formData.drumKit.snare}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="rackTom1">Rack Tom 1</label>
-                <input
-                  id="rackTom1"
-                  name="drumKit.rackTom1"
-                  type="text"
-                  placeholder='e.g., Gretsch 10x8"'
-                  value={formData.drumKit.rackTom1}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="rackTom2">Rack Tom 2</label>
-                <input
-                  id="rackTom2"
-                  name="drumKit.rackTom2"
-                  type="text"
-                  placeholder='e.g., Gretsch 12x9"'
-                  value={formData.drumKit.rackTom2}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="floorTom">Floor Tom</label>
-                <input
-                  id="floorTom"
-                  name="drumKit.floorTom"
-                  type="text"
-                  placeholder='e.g., Gretsch 16x14"'
-                  value={formData.drumKit.floorTom}
+                  value={formData.snare}
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
@@ -205,72 +322,129 @@ export default function CreatePost() {
             </div>
           </section>
 
-          {/* SECTION 3: Add-ons (Optional) */}
+          {/* SECTION 4: Cymbals (Optional) */}
           <section className="form-section">
-            <h4>Add-ons (Optional)</h4>
-            <p className="helper-text">Add cymbals, hardware, and effects</p>
+            <h4>Cymbals (Optional)</h4>
+            <p className="helper-text">Add cymbal models and sizes</p>
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="hiHats">Hi-Hats</label>
+                <label htmlFor="crash">Crash</label>
                 <input
-                  id="hiHats"
-                  name="addOns.hiHats"
+                  id="crash"
+                  name="crash"
                   type="text"
-                  placeholder='e.g., Zildjian 14" A Custom'
-                  value={formData.addOns.hiHats}
+                  placeholder='e.g., Zildjian 18" A Custom'
+                  value={formData.crash}
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="rideCymbal">Ride Cymbal</label>
+                <label htmlFor="ride">Ride</label>
                 <input
-                  id="rideCymbal"
-                  name="addOns.rideCymbal"
+                  id="ride"
+                  name="ride"
                   type="text"
-                  placeholder='e.g., Paiste 20" Signature'
-                  value={formData.addOns.rideCymbal}
+                  placeholder='e.g., Paiste 22" Signature'
+                  value={formData.ride}
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="crashCymbal">Crash Cymbal</label>
+                <label htmlFor="hiHat">Hi-Hat</label>
                 <input
-                  id="crashCymbal"
-                  name="addOns.crashCymbal"
+                  id="hiHat"
+                  name="hiHat"
                   type="text"
-                  placeholder='e.g., Sabian 18" AAX'
-                  value={formData.addOns.crashCymbal}
+                  placeholder='e.g., Zildjian 14" New Beats'
+                  value={formData.hiHat}
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="hardware">Hardware</label>
+                <label htmlFor="splash">Splash</label>
                 <input
-                  id="hardware"
-                  name="addOns.hardware"
+                  id="splash"
+                  name="splash"
                   type="text"
-                  placeholder="e.g., DW 9000 Series"
-                  value={formData.addOns.hardware}
+                  placeholder='e.g., Sabian 10" AAX'
+                  value={formData.splash}
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="effects">Effects</label>
+                <label htmlFor="china">China</label>
                 <input
-                  id="effects"
-                  name="addOns.effects"
+                  id="china"
+                  name="china"
                   type="text"
-                  placeholder="e.g., Splash, China, Cowbell"
-                  value={formData.addOns.effects}
+                  placeholder='e.g., Wuhan 18" China'
+                  value={formData.china}
                   onChange={handleChange}
                   disabled={isSubmitting}
                 />
               </div>
             </div>
+          </section>
+
+          {/* SECTION 5: Extras (Dynamic Array) */}
+          <section className="form-section">
+            <h4>Extra Pieces (Optional)</h4>
+            <p className="helper-text">
+              Add additional drums, cymbals, hardware, or effects beyond the standard kit.
+              Labels will be auto-generated (e.g., tom4, crash2, hardware1).
+            </p>
+
+            {/* Extras List */}
+            <div className="extras-list">
+              {extras.map((extra, index) => (
+                <div key={index} className="extra-item-edit">
+                  <select
+                    value={extra.category}
+                    onChange={(e) => handleExtrasCategoryChange(index, e.target.value)}
+                    disabled={isSubmitting}
+                    className="extra-category-select"
+                  >
+                    <option value="">Select type...</option>
+                    {EXTRAS_CATEGORIES.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Enter details..."
+                    value={extra.value}
+                    onChange={(e) => handleExtrasValueChange(index, e.target.value)}
+                    disabled={isSubmitting}
+                    className="extra-value-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveExtra(index)}
+                    disabled={isSubmitting}
+                    className="btn-remove-extra"
+                    title="Remove this extra"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Add Extra Button */}
+            <button
+              type="button"
+              onClick={handleAddExtra}
+              disabled={isSubmitting}
+              className="btn-add-extra"
+            >
+              + Add Extra Piece
+            </button>
           </section>
 
           {/* Error Message */}

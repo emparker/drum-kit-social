@@ -71,6 +71,10 @@ drum-kit-social/
 │   │   └── authMiddleware.js
 │   ├── server.js              # Express app entry point
 │   └── package.json
+├── plans/                     # Refactor documentation
+│   ├── DrummerPost-Refactor-Documentation.md
+│   ├── Quick-Reference.md
+│   └── README.md
 ├── .env                       # Environment variables (git ignored)
 ├── .gitignore
 ├── CLAUDE.md                  # This file
@@ -91,31 +95,43 @@ drum-kit-social/
 
 ### DrummerPost Model
 
-**Note:** A single drummer can have multiple posts (one per album/kit combination).
+**Note:** A single drummer can have multiple posts (one per album/kit combination). Uses a flat structure with organized sections.
 
 ```javascript
 {
-  drummerName: String (required),
-  album: String (required),             // Album where drummer used this kit
+  // Required Fields
+  drummerName: String (required, trim),
+  band: String (required, trim),        // Band name (NEW)
+  album: String (required, trim),       // Album where drummer used this kit
   user: ObjectId (ref: User),           // Creator of the post
 
-  // Standard 5-Piece Kit
-  drumKit: {
-    kickDrum: String,
-    snare: String,
-    rackTom1: String,
-    rackTom2: String,
-    floorTom: String
-  },
+  // Kit Metadata (Optional)
+  drumKitModel: String (trim),          // e.g., "Tama Starclassic"
+  material: String (trim),              // e.g., "Birch/Maple"
+  color: String (trim),                 // e.g., "Starburst Fade"
+  kitPieceCount: Number,                // e.g., 5
 
-  // Add-ons (predefined categories)
-  addOns: {
-    hiHats: String,
-    rideCymbal: String,
-    crashCymbal: String,
-    hardware: String,
-    effects: String
-  },
+  // Drums (Optional) - Flat fields, not nested
+  bass: String (trim),                  // was kickDrum
+  tom1: String (trim),                  // was rackTom1
+  tom2: String (trim),                  // was rackTom2
+  tom3: String (trim),                  // was floorTom
+  snare: String (trim),
+
+  // Cymbals (Optional) - Flat fields
+  crash: String (trim),
+  ride: String (trim),
+  splash: String (trim),
+  china: String (trim),
+  hiHat: String (trim),                 // was hiHats in addOns
+
+  // Extras (Dynamic Array) - For additional gear beyond standard kit
+  extras: [{
+    category: String (enum: ['bass', 'tom', 'snare', 'crash', 'ride',
+              'splash', 'china', 'hi-hat', 'hardware', 'kick-pedal', 'effects']),
+    label: String (auto-generated),     // e.g., "tom4", "snare2", "hardware1"
+    value: String (trim)                // e.g., "DW 16x14"
+  }],
 
   // Voting system (many-to-many)
   likes: [ObjectId (ref: User)],        // Users who liked
@@ -125,6 +141,8 @@ drum-kit-social/
   updatedAt: Date
 }
 ```
+
+**Extras Label Generation:** The backend pre-save hook automatically generates sequential labels based on existing fields and extras of the same category. For example, if `tom1`, `tom2`, `tom3` exist and you add a "tom" extra, it becomes "tom4".
 
 ### Comment Model
 ```javascript
@@ -221,12 +239,14 @@ Manages: posts array, CRUD operations, voting, drum kit updates, comment operati
 3. JWT attached to all API requests via Authorization header
 4. Protected routes check for valid token
 
-### Album Field & Display ✅ Implemented
-- Album is a required field connecting the drummer to a specific recording
-- **Implementation:** Album displayed in highlighted lime green box between drummer name and kit details
-- Visual hierarchy: Drummer name (Michroma all-caps) → Album (lime green, Inter Bold) → Kit details
-- Album has its own section with "Album:" label and prominent title styling
-- Clear separation from drum kit information for improved readability
+### Band & Album Fields ✅ Implemented
+- Band and Album are required fields connecting the drummer to a specific recording
+- **Implementation:** Band and Album displayed inline in a single row (flexbox)
+  - Shared container with subtle accent background and lime green left border
+  - Band on left, Album on right
+  - Labels in uppercase, values in lime green accent color
+- Visual hierarchy: Drummer name (Michroma all-caps) → Band & Album row → Kit details
+- Form sections: Required Info → Kit Metadata → Drums → Cymbals → Extras
 
 ### Voting Rules ✅ Implemented
 - Each user can ONLY like OR dislike a post (not both)
@@ -240,9 +260,12 @@ Manages: posts array, CRUD operations, voting, drum kit updates, comment operati
 | Field | Who Can Edit | Where |
 |-------|--------------|-------|
 | Drummer Name | Post creator only | My Posts page |
+| Band | Post creator only | My Posts page |
 | Album | Post creator only | My Posts page |
-| Drum Kit Info | Post creator only | My Posts page |
-| Add-ons | Post creator only | My Posts page |
+| Kit Metadata | Post creator only | My Posts page |
+| Drums | Post creator only | My Posts page |
+| Cymbals | Post creator only | My Posts page |
+| Extras | Post creator only | My Posts page |
 | Delete Post | Post creator only | My Posts page |
 
 **Key Concept:** Full ownership model. Only the creator can edit ANY field on their post. Community interaction is limited to viewing, voting, and commenting.

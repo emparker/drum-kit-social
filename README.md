@@ -7,6 +7,12 @@ A community-driven MERN stack application where users create and share professio
 **Current Phase:** Phase 5 Complete ✅
 **Next Up:** Phase 6 - Create Post Page
 
+
+### Claude Code Instructions ###
+  - Always refer to documentation 
+  - Always use necessary agents when in research and development
+  - Always plan first before any code
+
 ### ✅ Completed Features
 
 - **User Authentication**
