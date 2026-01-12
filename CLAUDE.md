@@ -101,7 +101,7 @@ drum-kit-social/
 {
   // Required Fields
   drummerName: String (required, trim),
-  band: String (required, trim),        // Band name (NEW)
+  band: String (required, trim),        // Band name
   album: String (required, trim),       // Album where drummer used this kit
   user: ObjectId (ref: User),           // Creator of the post
 
@@ -111,11 +111,11 @@ drum-kit-social/
   color: String (trim),                 // e.g., "Starburst Fade"
   kitPieceCount: Number,                // e.g., 5
 
-  // Drums (Optional) - Flat fields, not nested
-  bass: String (trim),                  // was kickDrum
-  tom1: String (trim),                  // was rackTom1
-  tom2: String (trim),                  // was rackTom2
-  tom3: String (trim),                  // was floorTom
+  // Drums (Optional) - Flat fields
+  bass: String (trim),
+  tom1: String (trim),
+  tom2: String (trim),
+  tom3: String (trim),
   snare: String (trim),
 
   // Cymbals (Optional) - Flat fields
@@ -123,14 +123,27 @@ drum-kit-social/
   ride: String (trim),
   splash: String (trim),
   china: String (trim),
-  hiHat: String (trim),                 // was hiHats in addOns
+  hiHat: String (trim),
 
-  // Extras (Dynamic Array) - For additional gear beyond standard kit
-  extras: [{
-    category: String (enum: ['bass', 'tom', 'snare', 'crash', 'ride',
-              'splash', 'china', 'hi-hat', 'hardware', 'kick-pedal', 'effects']),
-    label: String (auto-generated),     // e.g., "tom4", "snare2", "hardware1"
+  // Extra Drums (Dynamic Array) - For additional drums beyond standard 5
+  extraDrums: [{
+    category: String (enum: ['bass', 'tom', 'snare']),
+    label: String (auto-generated),     // e.g., "tom4", "bass2", "snare2"
     value: String (trim)                // e.g., "DW 16x14"
+  }],
+
+  // Extra Cymbals (Dynamic Array) - For additional cymbals beyond standard 5
+  extraCymbals: [{
+    category: String (enum: ['crash', 'ride', 'splash', 'china', 'hi-hat']),
+    label: String (auto-generated),     // e.g., "crash2", "ride2", "hiHat2"
+    value: String (trim)                // e.g., "Zildjian 20\""
+  }],
+
+  // Extras (Dynamic Array) - For other gear (hardware, pedals, effects)
+  extras: [{
+    category: String (enum: ['hardware', 'kick-pedal', 'effects']),
+    label: String (auto-generated),     // e.g., "hardware1", "kick-pedal1"
+    value: String (trim)                // e.g., "DW 9000 Double Pedal"
   }],
 
   // Voting system (many-to-many)
@@ -142,7 +155,7 @@ drum-kit-social/
 }
 ```
 
-**Extras Label Generation:** The backend pre-save hook automatically generates sequential labels based on existing fields and extras of the same category. For example, if `tom1`, `tom2`, `tom3` exist and you add a "tom" extra, it becomes "tom4".
+**Extras Label Generation:** The backend pre-validate hook automatically generates sequential labels based on existing fields and extras of the same category. For example, if `tom1`, `tom2`, `tom3` exist and you add a "tom" extra to `extraDrums`, it becomes "tom4". Each array (`extraDrums`, `extraCymbals`, `extras`) is processed separately.
 
 ### Comment Model
 ```javascript

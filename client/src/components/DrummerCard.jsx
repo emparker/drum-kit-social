@@ -3,16 +3,24 @@ import { AuthContext } from '../context/AuthContext';
 import { PostContext } from '../context/PostContext';
 import CommentSection from './CommentSection';
 
-// Extras category options for dropdown
-const EXTRAS_CATEGORIES = [
+// Extra Drums dropdown options
+const EXTRA_DRUM_CATEGORIES = [
   { value: 'bass', label: 'Bass Drum' },
   { value: 'tom', label: 'Tom' },
   { value: 'snare', label: 'Snare' },
+];
+
+// Extra Cymbals dropdown options
+const EXTRA_CYMBAL_CATEGORIES = [
   { value: 'crash', label: 'Crash Cymbal' },
   { value: 'ride', label: 'Ride Cymbal' },
   { value: 'splash', label: 'Splash' },
   { value: 'china', label: 'China' },
   { value: 'hi-hat', label: 'Hi-Hat' },
+];
+
+// Other Extras dropdown options (hardware, pedals, effects)
+const OTHER_EXTRAS_CATEGORIES = [
   { value: 'hardware', label: 'Hardware' },
   { value: 'kick-pedal', label: 'Kick Pedal' },
   { value: 'effects', label: 'Effects' },
@@ -49,7 +57,9 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
     hiHat: post.hiHat || '',
   });
 
-  // Separate state for extras array
+  // Separate state for extras arrays
+  const [extraDrums, setExtraDrums] = useState(post.extraDrums || []);
+  const [extraCymbals, setExtraCymbals] = useState(post.extraCymbals || []);
   const [extras, setExtras] = useState(post.extras || []);
 
   // Check if any kit metadata fields are filled
@@ -61,7 +71,9 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
   // Check if any cymbal fields are filled
   const hasCymbals = post.crash || post.ride || post.splash || post.china || post.hiHat;
 
-  // Check if there are extras
+  // Check if there are extras for each category
+  const hasExtraDrums = post.extraDrums && post.extraDrums.length > 0;
+  const hasExtraCymbals = post.extraCymbals && post.extraCymbals.length > 0;
   const hasExtras = post.extras && post.extras.length > 0;
 
   // Check if current user has liked or disliked this post
@@ -91,7 +103,57 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
     }));
   };
 
-  // Handle extras category change
+  // Extra Drums handlers
+  const handleExtraDrumCategoryChange = (index, value) => {
+    setExtraDrums(prev =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, category: value } : extra
+      )
+    );
+  };
+
+  const handleExtraDrumValueChange = (index, value) => {
+    setExtraDrums(prev =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, value: value } : extra
+      )
+    );
+  };
+
+  const handleAddExtraDrum = () => {
+    setExtraDrums(prev => [...prev, { category: '', value: '' }]);
+  };
+
+  const handleRemoveExtraDrum = (index) => {
+    setExtraDrums(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Extra Cymbals handlers
+  const handleExtraCymbalCategoryChange = (index, value) => {
+    setExtraCymbals(prev =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, category: value } : extra
+      )
+    );
+  };
+
+  const handleExtraCymbalValueChange = (index, value) => {
+    setExtraCymbals(prev =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, value: value } : extra
+      )
+    );
+  };
+
+  const handleAddExtraCymbal = () => {
+    setExtraCymbals(prev => [...prev, { category: '', value: '' }]);
+  };
+
+  const handleRemoveExtraCymbal = (index) => {
+    setExtraCymbals(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Other Extras handlers (hardware, kick-pedal, effects)
   const handleExtrasCategoryChange = (index, value) => {
     setExtras(prev =>
       prev.map((extra, i) =>
@@ -100,7 +162,6 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
     );
   };
 
-  // Handle extras value change
   const handleExtrasValueChange = (index, value) => {
     setExtras(prev =>
       prev.map((extra, i) =>
@@ -109,12 +170,10 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
     );
   };
 
-  // Add new extra
   const handleAddExtra = () => {
     setExtras(prev => [...prev, { category: '', value: '' }]);
   };
 
-  // Remove extra
   const handleRemoveExtra = (index) => {
     setExtras(prev => prev.filter((_, i) => i !== index));
   };
@@ -145,6 +204,8 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
       china: post.china || '',
       hiHat: post.hiHat || '',
     });
+    setExtraDrums(post.extraDrums || []);
+    setExtraCymbals(post.extraCymbals || []);
     setExtras(post.extras || []);
     setIsEditing(false);
   };
@@ -162,6 +223,8 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
     const updateData = {
       ...formData,
       kitPieceCount: formData.kitPieceCount ? parseInt(formData.kitPieceCount, 10) : undefined,
+      extraDrums: extraDrums.filter(extra => extra.category && extra.value.trim()),
+      extraCymbals: extraCymbals.filter(extra => extra.category && extra.value.trim()),
       extras: extras.filter(extra => extra.category && extra.value.trim()),
     };
 
@@ -351,7 +414,7 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
       )}
 
       {/* Drums Section */}
-      {(isEditing || hasDrums) && (
+      {(isEditing || hasDrums || hasExtraDrums) && (
         <section className="drums-section">
           <h5 className="section-title">Drums</h5>
           <div className="kit-grid">
@@ -441,11 +504,70 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
               </div>
             )}
           </div>
+
+          {/* Extra Drums Subsection */}
+          {(isEditing || hasExtraDrums) && (
+            <div className="extra-subsection">
+              <span className="subsection-label">Additional Drums</span>
+              {isEditing ? (
+                <div className="extras-edit">
+                  {extraDrums.map((extra, index) => (
+                    <div key={index} className="extra-item-edit">
+                      <span className="extra-label-display">{extra.label || 'New'}:</span>
+                      <select
+                        value={extra.category}
+                        onChange={(e) => handleExtraDrumCategoryChange(index, e.target.value)}
+                        className="extra-category-select"
+                      >
+                        <option value="">Select type...</option>
+                        {EXTRA_DRUM_CATEGORIES.map((cat) => (
+                          <option key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Enter details..."
+                        value={extra.value}
+                        onChange={(e) => handleExtraDrumValueChange(index, e.target.value)}
+                        className="extra-value-input"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveExtraDrum(index)}
+                        className="btn-remove-extra"
+                        title="Remove this drum"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleAddExtraDrum}
+                    className="btn-add-extra"
+                  >
+                    + Add Extra Drum
+                  </button>
+                </div>
+              ) : (
+                <div className="extras-display">
+                  {post.extraDrums.map((extra, index) => (
+                    <div key={index} className="extra-item">
+                      <span className="extra-label">{extra.label}:</span>
+                      <span className="extra-value">{extra.value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </section>
       )}
 
       {/* Cymbals Section */}
-      {(isEditing || hasCymbals) && (
+      {(isEditing || hasCymbals || hasExtraCymbals) && (
         <section className="cymbals-section">
           <h5 className="section-title">Cymbals</h5>
           <div className="cymbals-grid">
@@ -535,13 +657,72 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
               </div>
             )}
           </div>
+
+          {/* Extra Cymbals Subsection */}
+          {(isEditing || hasExtraCymbals) && (
+            <div className="extra-subsection">
+              <span className="subsection-label">Additional Cymbals</span>
+              {isEditing ? (
+                <div className="extras-edit">
+                  {extraCymbals.map((extra, index) => (
+                    <div key={index} className="extra-item-edit">
+                      <span className="extra-label-display">{extra.label || 'New'}:</span>
+                      <select
+                        value={extra.category}
+                        onChange={(e) => handleExtraCymbalCategoryChange(index, e.target.value)}
+                        className="extra-category-select"
+                      >
+                        <option value="">Select type...</option>
+                        {EXTRA_CYMBAL_CATEGORIES.map((cat) => (
+                          <option key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Enter details..."
+                        value={extra.value}
+                        onChange={(e) => handleExtraCymbalValueChange(index, e.target.value)}
+                        className="extra-value-input"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveExtraCymbal(index)}
+                        className="btn-remove-extra"
+                        title="Remove this cymbal"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleAddExtraCymbal}
+                    className="btn-add-extra"
+                  >
+                    + Add Extra Cymbal
+                  </button>
+                </div>
+              ) : (
+                <div className="extras-display">
+                  {post.extraCymbals.map((extra, index) => (
+                    <div key={index} className="extra-item">
+                      <span className="extra-label">{extra.label}:</span>
+                      <span className="extra-value">{extra.value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </section>
       )}
 
-      {/* Extras Section */}
+      {/* Other Gear Section */}
       {(isEditing || hasExtras) && (
         <section className="extras-section">
-          <h5 className="section-title">Extra Pieces</h5>
+          <h5 className="section-title">Other Gear</h5>
           {isEditing ? (
             <div className="extras-edit">
               {extras.map((extra, index) => (
@@ -553,7 +734,7 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
                     className="extra-category-select"
                   >
                     <option value="">Select type...</option>
-                    {EXTRAS_CATEGORIES.map((cat) => (
+                    {OTHER_EXTRAS_CATEGORIES.map((cat) => (
                       <option key={cat.value} value={cat.value}>
                         {cat.label}
                       </option>
@@ -570,7 +751,7 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
                     type="button"
                     onClick={() => handleRemoveExtra(index)}
                     className="btn-remove-extra"
-                    title="Remove this extra"
+                    title="Remove this item"
                   >
                     ×
                   </button>
@@ -581,7 +762,7 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
                 onClick={handleAddExtra}
                 className="btn-add-extra"
               >
-                + Add Extra Piece
+                + Add Other Gear
               </button>
             </div>
           ) : (

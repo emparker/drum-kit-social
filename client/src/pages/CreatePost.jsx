@@ -3,16 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { PostContext } from '../context/PostContext';
 import AppHeader from '../components/AppHeader';
 
-// Extras category options for dropdown
-const EXTRAS_CATEGORIES = [
+// Extra Drums dropdown options
+const EXTRA_DRUM_CATEGORIES = [
   { value: 'bass', label: 'Bass Drum' },
   { value: 'tom', label: 'Tom' },
   { value: 'snare', label: 'Snare' },
+];
+
+// Extra Cymbals dropdown options
+const EXTRA_CYMBAL_CATEGORIES = [
   { value: 'crash', label: 'Crash Cymbal' },
   { value: 'ride', label: 'Ride Cymbal' },
   { value: 'splash', label: 'Splash' },
   { value: 'china', label: 'China' },
   { value: 'hi-hat', label: 'Hi-Hat' },
+];
+
+// Other Extras dropdown options (hardware, pedals, effects)
+const OTHER_EXTRAS_CATEGORIES = [
   { value: 'hardware', label: 'Hardware' },
   { value: 'kick-pedal', label: 'Kick Pedal' },
   { value: 'effects', label: 'Effects' },
@@ -46,7 +54,9 @@ export default function CreatePost() {
     hiHat: '',
   });
 
-  // Separate state for dynamic extras array
+  // Separate state for dynamic extras arrays
+  const [extraDrums, setExtraDrums] = useState([]);
+  const [extraCymbals, setExtraCymbals] = useState([]);
   const [extras, setExtras] = useState([]);
 
   const [error, setError] = useState('');
@@ -62,7 +72,57 @@ export default function CreatePost() {
     }));
   }
 
-  // Handle extras category change
+  // Extra Drums handlers
+  function handleExtraDrumCategoryChange(index, value) {
+    setExtraDrums((prev) =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, category: value } : extra
+      )
+    );
+  }
+
+  function handleExtraDrumValueChange(index, value) {
+    setExtraDrums((prev) =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, value: value } : extra
+      )
+    );
+  }
+
+  function handleAddExtraDrum() {
+    setExtraDrums((prev) => [...prev, { category: '', value: '' }]);
+  }
+
+  function handleRemoveExtraDrum(index) {
+    setExtraDrums((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  // Extra Cymbals handlers
+  function handleExtraCymbalCategoryChange(index, value) {
+    setExtraCymbals((prev) =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, category: value } : extra
+      )
+    );
+  }
+
+  function handleExtraCymbalValueChange(index, value) {
+    setExtraCymbals((prev) =>
+      prev.map((extra, i) =>
+        i === index ? { ...extra, value: value } : extra
+      )
+    );
+  }
+
+  function handleAddExtraCymbal() {
+    setExtraCymbals((prev) => [...prev, { category: '', value: '' }]);
+  }
+
+  function handleRemoveExtraCymbal(index) {
+    setExtraCymbals((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  // Other Extras handlers (hardware, kick-pedal, effects)
   function handleExtrasCategoryChange(index, value) {
     setExtras((prev) =>
       prev.map((extra, i) =>
@@ -71,7 +131,6 @@ export default function CreatePost() {
     );
   }
 
-  // Handle extras value change
   function handleExtrasValueChange(index, value) {
     setExtras((prev) =>
       prev.map((extra, i) =>
@@ -80,12 +139,10 @@ export default function CreatePost() {
     );
   }
 
-  // Add new extra
   function handleAddExtra() {
     setExtras((prev) => [...prev, { category: '', value: '' }]);
   }
 
-  // Remove extra
   function handleRemoveExtra(index) {
     setExtras((prev) => prev.filter((_, i) => i !== index));
   }
@@ -110,6 +167,8 @@ export default function CreatePost() {
         // Convert kitPieceCount to number if provided
         kitPieceCount: formData.kitPieceCount ? parseInt(formData.kitPieceCount, 10) : undefined,
         // Filter out empty extras (both category and value must be present)
+        extraDrums: extraDrums.filter((extra) => extra.category && extra.value.trim()),
+        extraCymbals: extraCymbals.filter((extra) => extra.category && extra.value.trim()),
         extras: extras.filter((extra) => extra.category && extra.value.trim()),
       };
 
@@ -320,6 +379,55 @@ export default function CreatePost() {
                 />
               </div>
             </div>
+
+            {/* Extra Drums Subsection */}
+            <div className="extra-subsection">
+              <span className="subsection-label">Additional Drums</span>
+              <div className="extras-list">
+                {extraDrums.map((extra, index) => (
+                  <div key={index} className="extra-item-edit">
+                    <select
+                      value={extra.category}
+                      onChange={(e) => handleExtraDrumCategoryChange(index, e.target.value)}
+                      disabled={isSubmitting}
+                      className="extra-category-select"
+                    >
+                      <option value="">Select type...</option>
+                      {EXTRA_DRUM_CATEGORIES.map((cat) => (
+                        <option key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Enter details..."
+                      value={extra.value}
+                      onChange={(e) => handleExtraDrumValueChange(index, e.target.value)}
+                      disabled={isSubmitting}
+                      className="extra-value-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExtraDrum(index)}
+                      disabled={isSubmitting}
+                      className="btn-remove-extra"
+                      title="Remove this drum"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddExtraDrum}
+                disabled={isSubmitting}
+                className="btn-add-extra"
+              >
+                + Add Extra Drum
+              </button>
+            </div>
           </section>
 
           {/* SECTION 4: Cymbals (Optional) */}
@@ -388,14 +496,63 @@ export default function CreatePost() {
                 />
               </div>
             </div>
+
+            {/* Extra Cymbals Subsection */}
+            <div className="extra-subsection">
+              <span className="subsection-label">Additional Cymbals</span>
+              <div className="extras-list">
+                {extraCymbals.map((extra, index) => (
+                  <div key={index} className="extra-item-edit">
+                    <select
+                      value={extra.category}
+                      onChange={(e) => handleExtraCymbalCategoryChange(index, e.target.value)}
+                      disabled={isSubmitting}
+                      className="extra-category-select"
+                    >
+                      <option value="">Select type...</option>
+                      {EXTRA_CYMBAL_CATEGORIES.map((cat) => (
+                        <option key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Enter details..."
+                      value={extra.value}
+                      onChange={(e) => handleExtraCymbalValueChange(index, e.target.value)}
+                      disabled={isSubmitting}
+                      className="extra-value-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExtraCymbal(index)}
+                      disabled={isSubmitting}
+                      className="btn-remove-extra"
+                      title="Remove this cymbal"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddExtraCymbal}
+                disabled={isSubmitting}
+                className="btn-add-extra"
+              >
+                + Add Extra Cymbal
+              </button>
+            </div>
           </section>
 
-          {/* SECTION 5: Extras (Dynamic Array) */}
+          {/* SECTION 5: Other Gear (Dynamic Array) */}
           <section className="form-section">
-            <h4>Extra Pieces (Optional)</h4>
+            <h4>Other Gear (Optional)</h4>
             <p className="helper-text">
-              Add additional drums, cymbals, hardware, or effects beyond the standard kit.
-              Labels will be auto-generated (e.g., tom4, crash2, hardware1).
+              Add hardware, kick pedals, effects, and other accessories.
+              Labels will be auto-generated (e.g., hardware1, kick-pedal1).
             </p>
 
             {/* Extras List */}
@@ -409,7 +566,7 @@ export default function CreatePost() {
                     className="extra-category-select"
                   >
                     <option value="">Select type...</option>
-                    {EXTRAS_CATEGORIES.map((cat) => (
+                    {OTHER_EXTRAS_CATEGORIES.map((cat) => (
                       <option key={cat.value} value={cat.value}>
                         {cat.label}
                       </option>
@@ -428,7 +585,7 @@ export default function CreatePost() {
                     onClick={() => handleRemoveExtra(index)}
                     disabled={isSubmitting}
                     className="btn-remove-extra"
-                    title="Remove this extra"
+                    title="Remove this item"
                   >
                     ×
                   </button>
@@ -443,7 +600,7 @@ export default function CreatePost() {
               disabled={isSubmitting}
               className="btn-add-extra"
             >
-              + Add Extra Piece
+              + Add Other Gear
             </button>
           </section>
 

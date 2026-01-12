@@ -7,14 +7,12 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="theme-toggle-btn"
+      className="theme-toggle-btn icon-only"
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
     >
       <span className="theme-icon" aria-hidden="true">
         {theme === 'light' ? '🌙' : '☀️'}
-      </span>
-      <span className="theme-label">
-        {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
       </span>
     </button>
   );

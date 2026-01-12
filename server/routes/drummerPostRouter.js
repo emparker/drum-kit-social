@@ -95,6 +95,8 @@ router.post('/', async (req, res) => {
       splash,
       china,
       hiHat,
+      extraDrums,
+      extraCymbals,
       extras
     } = req.body;
 
@@ -125,6 +127,8 @@ router.post('/', async (req, res) => {
       splash,
       china,
       hiHat,
+      extraDrums: extraDrums || [],
+      extraCymbals: extraCymbals || [],
       extras: extras || [],
       user: req.auth._id  // Attach logged-in user's ID
     });
@@ -188,6 +192,8 @@ router.put('/:postId', async (req, res) => {
     if (updates.splash !== undefined) post.splash = updates.splash;
     if (updates.china !== undefined) post.china = updates.china;
     if (updates.hiHat !== undefined) post.hiHat = updates.hiHat;
+    if (updates.extraDrums !== undefined) post.extraDrums = updates.extraDrums;
+    if (updates.extraCymbals !== undefined) post.extraCymbals = updates.extraCymbals;
     if (updates.extras !== undefined) post.extras = updates.extras;
 
     await post.save();

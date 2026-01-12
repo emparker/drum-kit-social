@@ -526,6 +526,32 @@ label {
   transform: translateY(0);
 }
 
+/* Icon-only variant - smaller, more subtle */
+.theme-toggle-btn.icon-only {
+  padding: var(--space-xs);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+}
+
+.theme-toggle-btn.icon-only:hover {
+  background: var(--color-bg-secondary);
+  border: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.theme-toggle-btn.icon-only:active {
+  background: var(--color-border);
+}
+
+.theme-toggle-btn.icon-only .theme-icon {
+  font-size: 1.25rem;
+}
+
 .theme-icon {
   font-size: 1.25rem;
   line-height: 1;
@@ -761,6 +787,23 @@ label {
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-lg);
   border-bottom: 1px solid var(--color-border);
+}
+
+/* Extra Subsection (within Drums/Cymbals sections) */
+.extra-subsection {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px dashed var(--color-border);
+}
+
+.subsection-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-light);
+  margin-bottom: var(--space-md);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .extras-list {
