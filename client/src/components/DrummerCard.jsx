@@ -2,6 +2,15 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { PostContext } from '../context/PostContext';
 import CommentSection from './CommentSection';
+import CollapsibleSection from './CollapsibleSection';
+import {
+  DrumKitIcon,
+  DrumIcon,
+  CymbalIcon,
+  GearIcon,
+  CommentIcon,
+} from './icons/DrummerIcons';
+import './icons/DrummerIcons.css';
 
 // Extra Drums dropdown options
 const EXTRA_DRUM_CATEGORIES = [
@@ -62,6 +71,35 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
   const [extraCymbals, setExtraCymbals] = useState(post.extraCymbals || []);
   const [extras, setExtras] = useState(post.extras || []);
 
+  // Collapsible section state
+  const [expandedSections, setExpandedSections] = useState({
+    kitMetadata: false,
+    drums: false,
+    cymbals: false,
+    otherGear: false,
+    comments: false,
+  });
+
+  // Toggle individual section
+  const toggleSection = (sectionName) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [sectionName]: !prev[sectionName],
+    }));
+  };
+
+  // Expand all sections (for edit mode)
+  const expandAllSections = () => {
+    setExpandedSections({
+      kitMetadata: true,
+      drums: true,
+      cymbals: true,
+      otherGear: true,
+      comments: true,
+    });
+  };
+
+
   // Check if any kit metadata fields are filled
   const hasKitMetadata = post.drumKitModel || post.material || post.color || post.kitPieceCount;
 
@@ -75,6 +113,91 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
   const hasExtraDrums = post.extraDrums && post.extraDrums.length > 0;
   const hasExtraCymbals = post.extraCymbals && post.extraCymbals.length > 0;
   const hasExtras = post.extras && post.extras.length > 0;
+
+  // Count calculations for collapsible sections
+  const kitMetadataCount = [
+    post.drumKitModel,
+    post.material,
+    post.color,
+    post.kitPieceCount,
+  ].filter(Boolean).length;
+
+  const drumsCount =
+    [post.bass, post.tom1, post.tom2, post.tom3, post.snare].filter(Boolean).length +
+    (post.extraDrums?.length || 0);
+
+  const cymbalsCount =
+    [post.crash, post.ride, post.hiHat, post.splash, post.china].filter(Boolean).length +
+    (post.extraCymbals?.length || 0);
+
+  const otherGearCount = post.extras?.length || 0;
+
+  // Preview content generators
+  const getKitMetadataPreview = () => {
+    const parts = [
+      post.drumKitModel,
+      post.material,
+      post.color,
+      post.kitPieceCount && `${post.kitPieceCount}-piece`,
+    ].filter(Boolean);
+
+    return parts.length > 0 ? parts.join(' • ') : 'No kit details provided';
+  };
+
+  const getDrumsPreview = () => {
+    const drumLabels = [];
+    if (post.bass) drumLabels.push('Bass');
+    if (post.tom1) drumLabels.push('Tom 1');
+    if (post.tom2) drumLabels.push('Tom 2');
+    if (post.tom3) drumLabels.push('Tom 3');
+    if (post.snare) drumLabels.push('Snare');
+
+    const extraCount = post.extraDrums?.length || 0;
+    const preview = drumLabels.slice(0, 4);
+
+    const remaining = drumLabels.length + extraCount - preview.length;
+    if (remaining > 0) preview.push(`+${remaining} more`);
+
+    return preview.length > 0 ? preview.join(' • ') : 'No drums configured';
+  };
+
+  const getCymbalsPreview = () => {
+    const cymbals = [post.crash, post.ride, post.hiHat, post.splash, post.china].filter(
+      Boolean
+    );
+    const extraCount = post.extraCymbals?.length || 0;
+
+    if (cymbals.length === 0 && extraCount === 0) {
+      return 'No cymbals configured';
+    }
+
+    // Extract unique brands (first word of each cymbal value)
+    const brands = [...new Set(cymbals.map((c) => c.split(' ')[0]))];
+    const preview = brands.slice(0, 3);
+
+    const remaining = brands.length + extraCount - preview.length;
+    if (remaining > 0) preview.push(`+${remaining} more`);
+
+    return preview.join(' • ');
+  };
+
+  const getOtherGearPreview = () => {
+    if (!post.extras || post.extras.length === 0) {
+      return 'No other gear added';
+    }
+
+    const categoryMap = {
+      hardware: 'Hardware',
+      'kick-pedal': 'Kick Pedals',
+      effects: 'Effects',
+    };
+
+    const categories = [
+      ...new Set(post.extras.map((e) => categoryMap[e.category] || e.category)),
+    ];
+
+    return categories.join(' • ');
+  };
 
   // Check if current user has liked or disliked this post
   const hasLiked = post.likes?.includes(user?._id);
@@ -181,6 +304,7 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
   // Enter edit mode
   const handleEdit = () => {
     setIsEditing(true);
+    expandAllSections(); // Show all sections for editing
   };
 
   // Cancel editing and revert changes
@@ -335,10 +459,19 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
         </div>
       </div>
 
-      {/* Kit Metadata Section */}
+      {/* Kit Metadata Section - Collapsible */}
       {(isEditing || hasKitMetadata) && (
-        <section className="kit-metadata-section">
-          <h5 className="section-title">Kit Information</h5>
+        <CollapsibleSection
+          icon={<DrumKitIcon size={20} />}
+          title="Kit Information"
+          count={kitMetadataCount}
+          previewContent={getKitMetadataPreview()}
+          isExpanded={expandedSections.kitMetadata}
+          onToggle={() => toggleSection('kitMetadata')}
+          isEmpty={!hasKitMetadata && !isEditing}
+          emptyMessage="No kit details provided"
+          className="kit-metadata-collapsible"
+        >
           <div className="metadata-grid">
             {(isEditing || post.drumKitModel) && (
               <div className="metadata-item">
@@ -410,13 +543,22 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
               </div>
             )}
           </div>
-        </section>
+        </CollapsibleSection>
       )}
 
-      {/* Drums Section */}
+      {/* Drums Section - Collapsible */}
       {(isEditing || hasDrums || hasExtraDrums) && (
-        <section className="drums-section">
-          <h5 className="section-title">Drums</h5>
+        <CollapsibleSection
+          icon={<DrumIcon size={20} />}
+          title="Drums"
+          count={drumsCount}
+          previewContent={getDrumsPreview()}
+          isExpanded={expandedSections.drums}
+          onToggle={() => toggleSection('drums')}
+          isEmpty={!hasDrums && !hasExtraDrums && !isEditing}
+          emptyMessage="No drums configured"
+          className="drums-collapsible"
+        >
           <div className="kit-grid">
             {(isEditing || post.bass) && (
               <div className="kit-item">
@@ -563,13 +705,22 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
               )}
             </div>
           )}
-        </section>
+        </CollapsibleSection>
       )}
 
-      {/* Cymbals Section */}
+      {/* Cymbals Section - Collapsible */}
       {(isEditing || hasCymbals || hasExtraCymbals) && (
-        <section className="cymbals-section">
-          <h5 className="section-title">Cymbals</h5>
+        <CollapsibleSection
+          icon={<CymbalIcon size={20} />}
+          title="Cymbals"
+          count={cymbalsCount}
+          previewContent={getCymbalsPreview()}
+          isExpanded={expandedSections.cymbals}
+          onToggle={() => toggleSection('cymbals')}
+          isEmpty={!hasCymbals && !hasExtraCymbals && !isEditing}
+          emptyMessage="No cymbals configured"
+          className="cymbals-collapsible"
+        >
           <div className="cymbals-grid">
             {(isEditing || post.crash) && (
               <div className="cymbal-item">
@@ -716,13 +867,22 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
               )}
             </div>
           )}
-        </section>
+        </CollapsibleSection>
       )}
 
-      {/* Other Gear Section */}
+      {/* Other Gear Section - Collapsible */}
       {(isEditing || hasExtras) && (
-        <section className="extras-section">
-          <h5 className="section-title">Other Gear</h5>
+        <CollapsibleSection
+          icon={<GearIcon size={20} />}
+          title="Other Gear"
+          count={otherGearCount}
+          previewContent={getOtherGearPreview()}
+          isExpanded={expandedSections.otherGear}
+          onToggle={() => toggleSection('otherGear')}
+          isEmpty={!hasExtras && !isEditing}
+          emptyMessage="No other gear added"
+          className="other-gear-collapsible"
+        >
           {isEditing ? (
             <div className="extras-edit">
               {extras.map((extra, index) => (
@@ -775,7 +935,7 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
               ))}
             </div>
           )}
-        </section>
+        </CollapsibleSection>
       )}
 
       {/* Voting Section */}
@@ -809,8 +969,18 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
         </span>
       </footer>
 
-      {/* Comments Section */}
-      <CommentSection postId={post._id} />
+      {/* Comments Section - Collapsible */}
+      <CollapsibleSection
+        icon={<CommentIcon size={20} />}
+        title="Comments"
+        isExpanded={expandedSections.comments}
+        onToggle={() => toggleSection('comments')}
+        isEmpty={false}
+        showEmptyCount={true}
+        className="comments-collapsible"
+      >
+        <CommentSection postId={post._id} />
+      </CollapsibleSection>
     </article>
   );
 }

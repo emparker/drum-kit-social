@@ -1,0 +1,40 @@
+/* ===================================
+   DRUMMER ICONS - Base Styles
+   =================================== */
+
+.drummer-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Inherit color from parent by default */
+.drummer-icon {
+  color: inherit;
+}
+
+/* Section header icons - slightly muted */
+.section-icon .drummer-icon {
+  color: var(--color-text-light);
+  transition: color var(--transition-fast);
+}
+
+/* Hover state - accent color */
+.section-header:hover .section-icon .drummer-icon {
+  color: var(--color-primary);
+}
+
+/* Expanded state - keep accent */
+.collapsible-section.expanded .section-icon .drummer-icon {
+  color: var(--color-primary);
+}
+
+/* Dark mode adjustments */
+html.dark-mode .section-icon .drummer-icon {
+  color: var(--color-text-light);
+}
+
+html.dark-mode .section-header:hover .section-icon .drummer-icon,
+html.dark-mode .collapsible-section.expanded .section-icon .drummer-icon {
+  color: var(--color-primary);
+}

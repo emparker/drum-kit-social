@@ -48,6 +48,17 @@ drum-kit-social/
 ├── client/                    # React frontend
 │   ├── src/
 │   │   ├── components/        # Reusable UI components
+│   │   │   ├── icons/         # Custom SVG icon library
+│   │   │   │   ├── DrummerIcons.jsx
+│   │   │   │   └── DrummerIcons.css
+│   │   │   ├── AppHeader.jsx
+│   │   │   ├── CollapsibleSection.jsx
+│   │   │   ├── CollapsibleSection.css
+│   │   │   ├── CommentSection.jsx
+│   │   │   ├── DrummerCard.jsx
+│   │   │   ├── DrummerCard.css
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   └── ThemeToggle.jsx
 │   │   ├── context/           # React Context providers
 │   │   ├── pages/             # Page-level components
 │   │   ├── api/               # API call functions
@@ -72,6 +83,7 @@ drum-kit-social/
 │   ├── server.js              # Express app entry point
 │   └── package.json
 ├── plans/                     # Refactor documentation
+│   ├── DrummerCard-Collapsible-Sections-Refactor.md
 │   ├── DrummerPost-Refactor-Documentation.md
 │   ├── Quick-Reference.md
 │   └── README.md
@@ -215,8 +227,41 @@ drum-kit-social/
 | `ProtectedRoute.jsx` | Route guard for authenticated pages | ✅ Complete |
 | `AppHeader.jsx` | Reusable header with branding, user info, theme toggle, logout | ✅ Complete |
 | `ThemeToggle.jsx` | Dark/light mode toggle button | ✅ Complete |
-| `DrummerCard.jsx` | Display drummer post with kit details, voting, and comments | ✅ Complete |
+| `DrummerCard.jsx` | Display drummer post with collapsible sections, voting, and comments | ✅ Complete |
 | `CommentSection.jsx` | Comment list, create, edit, and delete functionality | ✅ Complete |
+| `CollapsibleSection.jsx` | Reusable expandable/collapsible container with ARIA support | ✅ Complete |
+| `icons/DrummerIcons.jsx` | Custom SVG icon library for drummer-specific icons | ✅ Complete |
+
+### Custom Icon Library
+
+Located in `src/components/icons/DrummerIcons.jsx`. Pure SVG icons with no dependencies.
+
+**Usage:**
+```javascript
+import { DrumIcon, CymbalIcon } from './icons/DrummerIcons';
+<DrumIcon size={24} className="my-class" />
+```
+
+**Available Icons:**
+| Icon | Component | Used For |
+|------|-----------|----------|
+| Drum (side view) | `<DrumIcon />` | Drums section |
+| Cymbal (top view) | `<CymbalIcon />` | Cymbals section |
+| Drum Kit | `<DrumKitIcon />` | Kit Information section |
+| Gear Cog | `<GearIcon />` | Other Gear section |
+| Comment Bubble | `<CommentIcon />` | Comments section |
+| Hi-Hat | `<HiHatIcon />` | Alternative cymbal icon |
+| Kick Pedal | `<PedalIcon />` | Hardware/pedals |
+| Snare (top view) | `<SnareIcon />` | Alternative drum icon |
+| Hardware Stand | `<HardwareIcon />` | Stands/hardware |
+| Effects Pad | `<EffectsIcon />` | Electronic gear |
+| Drum Sticks | `<DrumSticksIcon />` | Branding/general |
+
+**Features:**
+- `size` prop for scaling (default: 24px)
+- Inherits `currentColor` for easy theming
+- Dark mode compatible
+- Hover states change to lime green accent
 
 ## Context Providers
 
