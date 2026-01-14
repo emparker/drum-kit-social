@@ -263,6 +263,17 @@ import { DrumIcon, CymbalIcon } from './icons/DrummerIcons';
 - Dark mode compatible
 - Hover states change to lime green accent
 
+**Vote Button Icons (SVG):**
+- Like button: `src/assets/metal-horns.svg` - Rock hand gesture
+- Dislike button: `src/assets/drumstick.svg` - Broken drumstick
+- Fill color: #2A2A2A (dark gray)
+- Imported as modules in DrummerCard.jsx for proper Vite bundling
+- **Styling:** Social media style (Twitter/Reddit-like) - no box containers, just icon + count
+- **Size:** 32px desktop, 28px mobile
+- **Spacing:** 0.5rem gap between like and dislike buttons
+- **Dark mode:** CSS filter `invert(85%)` for visibility
+- **Hover/Active:** Lime green (#C5D945) tint with subtle scale animation
+
 ## Context Providers
 
 ### AuthContext
@@ -312,7 +323,7 @@ Manages: posts array, CRUD operations, voting, drum kit updates, comment operati
 - Clicking dislike when already disliked → removes dislike (toggle off)
 - Clicking like when disliked → removes dislike, adds like (mutually exclusive)
 - Posts sorted by total likes (descending)
-- **Implementation:** Emoji buttons (👍👎) with vote counts, lime green highlight when voted, optimistic UI updates
+- **Implementation:** Custom SVG icons (metal horns for like, broken drumstick for dislike) with vote counts, social media style (no box containers), lime green highlight on hover/active, optimistic UI updates
 
 ### Editing Permissions ✅ Implemented
 | Field | Who Can Edit | Where |

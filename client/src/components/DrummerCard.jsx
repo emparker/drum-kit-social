@@ -11,6 +11,8 @@ import {
   CommentIcon,
 } from './icons/DrummerIcons';
 import './icons/DrummerIcons.css';
+import metalHornsIcon from '../assets/metal-horns.svg';
+import brokenStickIcon from '../assets/drumstick.svg';
 
 // Extra Drums dropdown options
 const EXTRA_DRUM_CATEGORIES = [
@@ -947,7 +949,9 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
             className={`vote-btn like-btn ${hasLiked ? 'active' : ''}`}
             aria-label="Like this post"
           >
-            <span className="vote-icon">👍</span>
+            <span className="vote-icon">
+              <img src={metalHornsIcon} alt="Like" className="vote-icon-img" />
+            </span>
             <span className="vote-count">{post.likes?.length || 0}</span>
           </button>
           <button
@@ -956,7 +960,9 @@ export default function DrummerCard({ post, showEditControls = false, isOwner = 
             className={`vote-btn dislike-btn ${hasDisliked ? 'active' : ''}`}
             aria-label="Dislike this post"
           >
-            <span className="vote-icon">👎</span>
+            <span className="vote-icon">
+              <img src={brokenStickIcon} alt="Dislike" className="vote-icon-img" />
+            </span>
             <span className="vote-count">{post.dislikes?.length || 0}</span>
           </button>
         </div>

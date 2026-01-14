@@ -57,7 +57,7 @@ A community-driven MERN stack application where users create and share professio
     - Add-ons section with organized display
     - Owner information footer
   - **Voting System:**
-    - Like/Dislike buttons with emoji icons (👍👎)
+    - Like/Dislike buttons with custom SVG icons (metal horns / broken drumstick)
     - Real-time vote counts
     - Visual feedback (lime green when voted)
     - Toggle behavior (click again to remove vote)
